@@ -1,0 +1,123 @@
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+(() => {
+var exports = {};
+exports.id = "pages/_app";
+exports.ids = ["pages/_app"];
+exports.modules = {
+
+/***/ "(pages-dir-node)/./pages/_app.jsx":
+/*!************************!*\
+  !*** ./pages/_app.jsx ***!
+  \************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {\n__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* binding */ MyApp)\n/* harmony export */ });\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ \"react/jsx-dev-runtime\");\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _src_contexts_AuthContext__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../src/contexts/AuthContext */ \"(pages-dir-node)/./src/contexts/AuthContext.jsx\");\n/* harmony import */ var _src_index_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../src/index.css */ \"(pages-dir-node)/./src/index.css\");\n/* harmony import */ var _src_index_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_src_index_css__WEBPACK_IMPORTED_MODULE_2__);\nvar __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_src_contexts_AuthContext__WEBPACK_IMPORTED_MODULE_1__]);\n_src_contexts_AuthContext__WEBPACK_IMPORTED_MODULE_1__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];\n\n\n\nfunction MyApp({ Component, pageProps }) {\n    return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(_src_contexts_AuthContext__WEBPACK_IMPORTED_MODULE_1__.AuthProvider, {\n        children: /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(Component, {\n            ...pageProps\n        }, void 0, false, {\n            fileName: \"D:\\\\lawyerSaaSApp\\\\pages\\\\_app.jsx\",\n            lineNumber: 7,\n            columnNumber: 7\n        }, this)\n    }, void 0, false, {\n        fileName: \"D:\\\\lawyerSaaSApp\\\\pages\\\\_app.jsx\",\n        lineNumber: 6,\n        columnNumber: 5\n    }, this);\n}\n\n__webpack_async_result__();\n} catch(e) { __webpack_async_result__(e); } });//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHBhZ2VzLWRpci1ub2RlKS8uL3BhZ2VzL19hcHAuanN4IiwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7QUFBMkQ7QUFDakM7QUFFWCxTQUFTQyxNQUFNLEVBQUVDLFNBQVMsRUFBRUMsU0FBUyxFQUFFO0lBQ3BELHFCQUNFLDhEQUFDSCxtRUFBWUE7a0JBQ1gsNEVBQUNFO1lBQVcsR0FBR0MsU0FBUzs7Ozs7Ozs7Ozs7QUFHOUIiLCJzb3VyY2VzIjpbIkQ6XFxsYXd5ZXJTYWFTQXBwXFxwYWdlc1xcX2FwcC5qc3giXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgQXV0aFByb3ZpZGVyIH0gZnJvbSAnLi4vc3JjL2NvbnRleHRzL0F1dGhDb250ZXh0JztcclxuaW1wb3J0ICcuLi9zcmMvaW5kZXguY3NzJztcclxuXHJcbmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIE15QXBwKHsgQ29tcG9uZW50LCBwYWdlUHJvcHMgfSkge1xyXG4gIHJldHVybiAoXHJcbiAgICA8QXV0aFByb3ZpZGVyPlxyXG4gICAgICA8Q29tcG9uZW50IHsuLi5wYWdlUHJvcHN9IC8+XHJcbiAgICA8L0F1dGhQcm92aWRlcj5cclxuICApO1xyXG59XHJcblxyXG5cclxuIl0sIm5hbWVzIjpbIkF1dGhQcm92aWRlciIsIk15QXBwIiwiQ29tcG9uZW50IiwicGFnZVByb3BzIl0sImlnbm9yZUxpc3QiOltdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///(pages-dir-node)/./pages/_app.jsx\n");
+
+/***/ }),
+
+/***/ "(pages-dir-node)/./src/contexts/AuthContext.jsx":
+/*!**************************************!*\
+  !*** ./src/contexts/AuthContext.jsx ***!
+  \**************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {\n__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   AuthProvider: () => (/* binding */ AuthProvider),\n/* harmony export */   useAuth: () => (/* binding */ useAuth)\n/* harmony export */ });\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react/jsx-dev-runtime */ \"react/jsx-dev-runtime\");\n/* harmony import */ var react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ \"react\");\n/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _lib_firebase__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../lib/firebase */ \"(pages-dir-node)/./src/lib/firebase.js\");\n/* harmony import */ var firebase_auth__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! firebase/auth */ \"firebase/auth\");\n/* harmony import */ var firebase_firestore__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! firebase/firestore */ \"firebase/firestore\");\nvar __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_lib_firebase__WEBPACK_IMPORTED_MODULE_2__, firebase_auth__WEBPACK_IMPORTED_MODULE_3__, firebase_firestore__WEBPACK_IMPORTED_MODULE_4__]);\n([_lib_firebase__WEBPACK_IMPORTED_MODULE_2__, firebase_auth__WEBPACK_IMPORTED_MODULE_3__, firebase_firestore__WEBPACK_IMPORTED_MODULE_4__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);\n\n\n\n\n\nconst AuthContext = /*#__PURE__*/ (0,react__WEBPACK_IMPORTED_MODULE_1__.createContext)(undefined);\nfunction AuthProvider({ children }) {\n    const [user, setUser] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(null);\n    const [loading, setLoading] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(true);\n    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)({\n        \"AuthProvider.useEffect\": ()=>{\n            if (!_lib_firebase__WEBPACK_IMPORTED_MODULE_2__.auth) {\n                // SSR: no auth instance on server\n                setLoading(false);\n                return undefined;\n            }\n            const unsubscribe = (0,firebase_auth__WEBPACK_IMPORTED_MODULE_3__.onAuthStateChanged)(_lib_firebase__WEBPACK_IMPORTED_MODULE_2__.auth, {\n                \"AuthProvider.useEffect.unsubscribe\": (firebaseUser)=>{\n                    if (firebaseUser) {\n                        setUser({\n                            id: firebaseUser.uid,\n                            email: firebaseUser.email || ''\n                        });\n                        // Ensure a users/{uid} doc with email exists for notifications\n                        try {\n                            if (_lib_firebase__WEBPACK_IMPORTED_MODULE_2__.db && firebaseUser.email) {\n                                const userRef = (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_4__.doc)(_lib_firebase__WEBPACK_IMPORTED_MODULE_2__.db, 'users', firebaseUser.uid);\n                                // Merge preserves existing fields (like fcmTokens)\n                                (0,firebase_firestore__WEBPACK_IMPORTED_MODULE_4__.setDoc)(userRef, {\n                                    email: firebaseUser.email\n                                }, {\n                                    merge: true\n                                });\n                            }\n                        } catch  {}\n                    } else {\n                        setUser(null);\n                    }\n                    setLoading(false);\n                }\n            }[\"AuthProvider.useEffect.unsubscribe\"]);\n            return ({\n                \"AuthProvider.useEffect\": ()=>unsubscribe()\n            })[\"AuthProvider.useEffect\"];\n        }\n    }[\"AuthProvider.useEffect\"], []);\n    const signIn = async (email, password)=>{\n        try {\n            if (!_lib_firebase__WEBPACK_IMPORTED_MODULE_2__.auth) throw new Error('Auth is not available on the server');\n            const { user: firebaseUser } = await (0,firebase_auth__WEBPACK_IMPORTED_MODULE_3__.signInWithEmailAndPassword)(_lib_firebase__WEBPACK_IMPORTED_MODULE_2__.auth, email, password);\n            setUser({\n                id: firebaseUser.uid,\n                email: firebaseUser.email || ''\n            });\n            return {\n                error: null\n            };\n        } catch (err) {\n            return {\n                error: err\n            };\n        }\n    };\n    const signUp = async (email, password)=>{\n        try {\n            if (!_lib_firebase__WEBPACK_IMPORTED_MODULE_2__.auth) throw new Error('Auth is not available on the server');\n            const { user: firebaseUser } = await (0,firebase_auth__WEBPACK_IMPORTED_MODULE_3__.createUserWithEmailAndPassword)(_lib_firebase__WEBPACK_IMPORTED_MODULE_2__.auth, email, password);\n            setUser({\n                id: firebaseUser.uid,\n                email: firebaseUser.email || ''\n            });\n            return {\n                error: null\n            };\n        } catch (err) {\n            return {\n                error: err\n            };\n        }\n    };\n    const signOut = async ()=>{\n        if (!_lib_firebase__WEBPACK_IMPORTED_MODULE_2__.auth) return;\n        await (0,firebase_auth__WEBPACK_IMPORTED_MODULE_3__.signOut)(_lib_firebase__WEBPACK_IMPORTED_MODULE_2__.auth);\n    };\n    return /*#__PURE__*/ (0,react_jsx_dev_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxDEV)(AuthContext.Provider, {\n        value: {\n            user,\n            loading,\n            signIn,\n            signUp,\n            signOut\n        },\n        children: children\n    }, void 0, false, {\n        fileName: \"D:\\\\lawyerSaaSApp\\\\src\\\\contexts\\\\AuthContext.jsx\",\n        lineNumber: 70,\n        columnNumber: 5\n    }, this);\n}\nfunction useAuth() {\n    const context = (0,react__WEBPACK_IMPORTED_MODULE_1__.useContext)(AuthContext);\n    if (context === undefined) {\n        throw new Error('useAuth must be used within an AuthProvider');\n    }\n    return context;\n}\n\n__webpack_async_result__();\n} catch(e) { __webpack_async_result__(e); } });//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHBhZ2VzLWRpci1ub2RlKS8uL3NyYy9jb250ZXh0cy9BdXRoQ29udGV4dC5qc3giLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7Ozs7OztBQUF1RTtBQUM1QjtBQU1wQjtBQUMwQjtBQUVqRCxNQUFNYSw0QkFBY2Isb0RBQWFBLENBQUNjO0FBRTNCLFNBQVNDLGFBQWEsRUFBRUMsUUFBUSxFQUFFO0lBQ3ZDLE1BQU0sQ0FBQ0MsTUFBTUMsUUFBUSxHQUFHZiwrQ0FBUUEsQ0FBQztJQUNqQyxNQUFNLENBQUNnQixTQUFTQyxXQUFXLEdBQUdqQiwrQ0FBUUEsQ0FBQztJQUV2Q0QsZ0RBQVNBO2tDQUFDO1lBQ1IsSUFBSSxDQUFDRSwrQ0FBSUEsRUFBRTtnQkFDVCxrQ0FBa0M7Z0JBQ2xDZ0IsV0FBVztnQkFDWCxPQUFPTjtZQUNUO1lBQ0EsTUFBTU8sY0FBY2YsaUVBQWtCQSxDQUFDRiwrQ0FBSUE7c0RBQUUsQ0FBQ2tCO29CQUM1QyxJQUFJQSxjQUFjO3dCQUNoQkosUUFBUTs0QkFBRUssSUFBSUQsYUFBYUUsR0FBRzs0QkFBRUMsT0FBT0gsYUFBYUcsS0FBSyxJQUFJO3dCQUFHO3dCQUNoRSwrREFBK0Q7d0JBQy9ELElBQUk7NEJBQ0YsSUFBSXBCLDZDQUFFQSxJQUFJaUIsYUFBYUcsS0FBSyxFQUFFO2dDQUM1QixNQUFNQyxVQUFVZix1REFBR0EsQ0FBQ04sNkNBQUVBLEVBQUUsU0FBU2lCLGFBQWFFLEdBQUc7Z0NBQ2pELG1EQUFtRDtnQ0FDbkRaLDBEQUFNQSxDQUFDYyxTQUFTO29DQUFFRCxPQUFPSCxhQUFhRyxLQUFLO2dDQUFDLEdBQUc7b0NBQUVFLE9BQU87Z0NBQUs7NEJBQy9EO3dCQUNGLEVBQUUsT0FBTSxDQUFDO29CQUNYLE9BQU87d0JBQ0xULFFBQVE7b0JBQ1Y7b0JBQ0FFLFdBQVc7Z0JBQ2I7O1lBQ0E7MENBQU8sSUFBTUM7O1FBQ2Y7aUNBQUcsRUFBRTtJQUVMLE1BQU1PLFNBQVMsT0FBT0gsT0FBT0k7UUFDM0IsSUFBSTtZQUNGLElBQUksQ0FBQ3pCLCtDQUFJQSxFQUFFLE1BQU0sSUFBSTBCLE1BQU07WUFDM0IsTUFBTSxFQUFFYixNQUFNSyxZQUFZLEVBQUUsR0FBRyxNQUFNZix5RUFBMEJBLENBQUNILCtDQUFJQSxFQUFFcUIsT0FBT0k7WUFDN0VYLFFBQVE7Z0JBQUVLLElBQUlELGFBQWFFLEdBQUc7Z0JBQUVDLE9BQU9ILGFBQWFHLEtBQUssSUFBSTtZQUFHO1lBQ2hFLE9BQU87Z0JBQUVNLE9BQU87WUFBSztRQUN2QixFQUFFLE9BQU9DLEtBQUs7WUFDWixPQUFPO2dCQUFFRCxPQUFPQztZQUFJO1FBQ3RCO0lBQ0Y7SUFFQSxNQUFNQyxTQUFTLE9BQU9SLE9BQU9JO1FBQzNCLElBQUk7WUFDRixJQUFJLENBQUN6QiwrQ0FBSUEsRUFBRSxNQUFNLElBQUkwQixNQUFNO1lBQzNCLE1BQU0sRUFBRWIsTUFBTUssWUFBWSxFQUFFLEdBQUcsTUFBTWQsNkVBQThCQSxDQUFDSiwrQ0FBSUEsRUFBRXFCLE9BQU9JO1lBQ2pGWCxRQUFRO2dCQUFFSyxJQUFJRCxhQUFhRSxHQUFHO2dCQUFFQyxPQUFPSCxhQUFhRyxLQUFLLElBQUk7WUFBRztZQUNoRSxPQUFPO2dCQUFFTSxPQUFPO1lBQUs7UUFDdkIsRUFBRSxPQUFPQyxLQUFLO1lBQ1osT0FBTztnQkFBRUQsT0FBT0M7WUFBSTtRQUN0QjtJQUNGO0lBRUEsTUFBTXZCLFVBQVU7UUFDZCxJQUFJLENBQUNMLCtDQUFJQSxFQUFFO1FBQ1gsTUFBTU0sc0RBQWVBLENBQUNOLCtDQUFJQTtJQUM1QjtJQUVBLHFCQUNFLDhEQUFDUyxZQUFZcUIsUUFBUTtRQUFDQyxPQUFPO1lBQUVsQjtZQUFNRTtZQUFTUztZQUFRSztZQUFReEI7UUFBUTtrQkFDbkVPOzs7Ozs7QUFHUDtBQUVPLFNBQVNvQjtJQUNkLE1BQU1DLFVBQVVwQyxpREFBVUEsQ0FBQ1k7SUFDM0IsSUFBSXdCLFlBQVl2QixXQUFXO1FBQ3pCLE1BQU0sSUFBSWdCLE1BQU07SUFDbEI7SUFDQSxPQUFPTztBQUNUIiwic291cmNlcyI6WyJEOlxcbGF3eWVyU2FhU0FwcFxcc3JjXFxjb250ZXh0c1xcQXV0aENvbnRleHQuanN4Il0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IGNyZWF0ZUNvbnRleHQsIHVzZUNvbnRleHQsIHVzZUVmZmVjdCwgdXNlU3RhdGUgfSBmcm9tICdyZWFjdCc7XG5pbXBvcnQgeyBhdXRoLCBkYiB9IGZyb20gJy4uL2xpYi9maXJlYmFzZSc7XG5pbXBvcnQge1xuICBvbkF1dGhTdGF0ZUNoYW5nZWQsXG4gIHNpZ25JbldpdGhFbWFpbEFuZFBhc3N3b3JkLFxuICBjcmVhdGVVc2VyV2l0aEVtYWlsQW5kUGFzc3dvcmQsXG4gIHNpZ25PdXQgYXMgZmlyZWJhc2VTaWduT3V0LFxufSBmcm9tICdmaXJlYmFzZS9hdXRoJztcbmltcG9ydCB7IGRvYywgc2V0RG9jIH0gZnJvbSAnZmlyZWJhc2UvZmlyZXN0b3JlJztcblxuY29uc3QgQXV0aENvbnRleHQgPSBjcmVhdGVDb250ZXh0KHVuZGVmaW5lZCk7XG5cbmV4cG9ydCBmdW5jdGlvbiBBdXRoUHJvdmlkZXIoeyBjaGlsZHJlbiB9KSB7XG4gIGNvbnN0IFt1c2VyLCBzZXRVc2VyXSA9IHVzZVN0YXRlKG51bGwpO1xuICBjb25zdCBbbG9hZGluZywgc2V0TG9hZGluZ10gPSB1c2VTdGF0ZSh0cnVlKTtcblxuICB1c2VFZmZlY3QoKCkgPT4ge1xuICAgIGlmICghYXV0aCkge1xuICAgICAgLy8gU1NSOiBubyBhdXRoIGluc3RhbmNlIG9uIHNlcnZlclxuICAgICAgc2V0TG9hZGluZyhmYWxzZSk7XG4gICAgICByZXR1cm4gdW5kZWZpbmVkO1xuICAgIH1cbiAgICBjb25zdCB1bnN1YnNjcmliZSA9IG9uQXV0aFN0YXRlQ2hhbmdlZChhdXRoLCAoZmlyZWJhc2VVc2VyKSA9PiB7XG4gICAgICBpZiAoZmlyZWJhc2VVc2VyKSB7XG4gICAgICAgIHNldFVzZXIoeyBpZDogZmlyZWJhc2VVc2VyLnVpZCwgZW1haWw6IGZpcmViYXNlVXNlci5lbWFpbCB8fCAnJyB9KTtcbiAgICAgICAgLy8gRW5zdXJlIGEgdXNlcnMve3VpZH0gZG9jIHdpdGggZW1haWwgZXhpc3RzIGZvciBub3RpZmljYXRpb25zXG4gICAgICAgIHRyeSB7XG4gICAgICAgICAgaWYgKGRiICYmIGZpcmViYXNlVXNlci5lbWFpbCkge1xuICAgICAgICAgICAgY29uc3QgdXNlclJlZiA9IGRvYyhkYiwgJ3VzZXJzJywgZmlyZWJhc2VVc2VyLnVpZCk7XG4gICAgICAgICAgICAvLyBNZXJnZSBwcmVzZXJ2ZXMgZXhpc3RpbmcgZmllbGRzIChsaWtlIGZjbVRva2VucylcbiAgICAgICAgICAgIHNldERvYyh1c2VyUmVmLCB7IGVtYWlsOiBmaXJlYmFzZVVzZXIuZW1haWwgfSwgeyBtZXJnZTogdHJ1ZSB9KTtcbiAgICAgICAgICB9XG4gICAgICAgIH0gY2F0Y2gge31cbiAgICAgIH0gZWxzZSB7XG4gICAgICAgIHNldFVzZXIobnVsbCk7XG4gICAgICB9XG4gICAgICBzZXRMb2FkaW5nKGZhbHNlKTtcbiAgICB9KTtcbiAgICByZXR1cm4gKCkgPT4gdW5zdWJzY3JpYmUoKTtcbiAgfSwgW10pO1xuXG4gIGNvbnN0IHNpZ25JbiA9IGFzeW5jIChlbWFpbCwgcGFzc3dvcmQpID0+IHtcbiAgICB0cnkge1xuICAgICAgaWYgKCFhdXRoKSB0aHJvdyBuZXcgRXJyb3IoJ0F1dGggaXMgbm90IGF2YWlsYWJsZSBvbiB0aGUgc2VydmVyJyk7XG4gICAgICBjb25zdCB7IHVzZXI6IGZpcmViYXNlVXNlciB9ID0gYXdhaXQgc2lnbkluV2l0aEVtYWlsQW5kUGFzc3dvcmQoYXV0aCwgZW1haWwsIHBhc3N3b3JkKTtcbiAgICAgIHNldFVzZXIoeyBpZDogZmlyZWJhc2VVc2VyLnVpZCwgZW1haWw6IGZpcmViYXNlVXNlci5lbWFpbCB8fCAnJyB9KTtcbiAgICAgIHJldHVybiB7IGVycm9yOiBudWxsIH07XG4gICAgfSBjYXRjaCAoZXJyKSB7XG4gICAgICByZXR1cm4geyBlcnJvcjogZXJyIH07XG4gICAgfVxuICB9O1xuXG4gIGNvbnN0IHNpZ25VcCA9IGFzeW5jIChlbWFpbCwgcGFzc3dvcmQpID0+IHtcbiAgICB0cnkge1xuICAgICAgaWYgKCFhdXRoKSB0aHJvdyBuZXcgRXJyb3IoJ0F1dGggaXMgbm90IGF2YWlsYWJsZSBvbiB0aGUgc2VydmVyJyk7XG4gICAgICBjb25zdCB7IHVzZXI6IGZpcmViYXNlVXNlciB9ID0gYXdhaXQgY3JlYXRlVXNlcldpdGhFbWFpbEFuZFBhc3N3b3JkKGF1dGgsIGVtYWlsLCBwYXNzd29yZCk7XG4gICAgICBzZXRVc2VyKHsgaWQ6IGZpcmViYXNlVXNlci51aWQsIGVtYWlsOiBmaXJlYmFzZVVzZXIuZW1haWwgfHwgJycgfSk7XG4gICAgICByZXR1cm4geyBlcnJvcjogbnVsbCB9O1xuICAgIH0gY2F0Y2ggKGVycikge1xuICAgICAgcmV0dXJuIHsgZXJyb3I6IGVyciB9O1xuICAgIH1cbiAgfTtcblxuICBjb25zdCBzaWduT3V0ID0gYXN5bmMgKCkgPT4ge1xuICAgIGlmICghYXV0aCkgcmV0dXJuO1xuICAgIGF3YWl0IGZpcmViYXNlU2lnbk91dChhdXRoKTtcbiAgfTtcblxuICByZXR1cm4gKFxuICAgIDxBdXRoQ29udGV4dC5Qcm92aWRlciB2YWx1ZT17eyB1c2VyLCBsb2FkaW5nLCBzaWduSW4sIHNpZ25VcCwgc2lnbk91dCB9fT5cbiAgICAgIHtjaGlsZHJlbn1cbiAgICA8L0F1dGhDb250ZXh0LlByb3ZpZGVyPlxuICApO1xufVxuXG5leHBvcnQgZnVuY3Rpb24gdXNlQXV0aCgpIHtcbiAgY29uc3QgY29udGV4dCA9IHVzZUNvbnRleHQoQXV0aENvbnRleHQpO1xuICBpZiAoY29udGV4dCA9PT0gdW5kZWZpbmVkKSB7XG4gICAgdGhyb3cgbmV3IEVycm9yKCd1c2VBdXRoIG11c3QgYmUgdXNlZCB3aXRoaW4gYW4gQXV0aFByb3ZpZGVyJyk7XG4gIH1cbiAgcmV0dXJuIGNvbnRleHQ7XG59XG5cblxuIl0sIm5hbWVzIjpbImNyZWF0ZUNvbnRleHQiLCJ1c2VDb250ZXh0IiwidXNlRWZmZWN0IiwidXNlU3RhdGUiLCJhdXRoIiwiZGIiLCJvbkF1dGhTdGF0ZUNoYW5nZWQiLCJzaWduSW5XaXRoRW1haWxBbmRQYXNzd29yZCIsImNyZWF0ZVVzZXJXaXRoRW1haWxBbmRQYXNzd29yZCIsInNpZ25PdXQiLCJmaXJlYmFzZVNpZ25PdXQiLCJkb2MiLCJzZXREb2MiLCJBdXRoQ29udGV4dCIsInVuZGVmaW5lZCIsIkF1dGhQcm92aWRlciIsImNoaWxkcmVuIiwidXNlciIsInNldFVzZXIiLCJsb2FkaW5nIiwic2V0TG9hZGluZyIsInVuc3Vic2NyaWJlIiwiZmlyZWJhc2VVc2VyIiwiaWQiLCJ1aWQiLCJlbWFpbCIsInVzZXJSZWYiLCJtZXJnZSIsInNpZ25JbiIsInBhc3N3b3JkIiwiRXJyb3IiLCJlcnJvciIsImVyciIsInNpZ25VcCIsIlByb3ZpZGVyIiwidmFsdWUiLCJ1c2VBdXRoIiwiY29udGV4dCJdLCJpZ25vcmVMaXN0IjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///(pages-dir-node)/./src/contexts/AuthContext.jsx\n");
+
+/***/ }),
+
+/***/ "(pages-dir-node)/./src/index.css":
+/*!***********************!*\
+  !*** ./src/index.css ***!
+  \***********************/
+/***/ (() => {
+
+
+
+/***/ }),
+
+/***/ "(pages-dir-node)/./src/lib/firebase.js":
+/*!*****************************!*\
+  !*** ./src/lib/firebase.js ***!
+  \*****************************/
+/***/ ((__webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+eval("__webpack_require__.a(__webpack_module__, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {\n__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   auth: () => (/* binding */ auth),\n/* harmony export */   db: () => (/* binding */ db)\n/* harmony export */ });\n/* harmony import */ var firebase_app__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! firebase/app */ \"firebase/app\");\n/* harmony import */ var firebase_auth__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! firebase/auth */ \"firebase/auth\");\n/* harmony import */ var firebase_firestore__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! firebase/firestore */ \"firebase/firestore\");\nvar __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([firebase_app__WEBPACK_IMPORTED_MODULE_0__, firebase_auth__WEBPACK_IMPORTED_MODULE_1__, firebase_firestore__WEBPACK_IMPORTED_MODULE_2__]);\n([firebase_app__WEBPACK_IMPORTED_MODULE_0__, firebase_auth__WEBPACK_IMPORTED_MODULE_1__, firebase_firestore__WEBPACK_IMPORTED_MODULE_2__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);\n\n\n\nconst firebaseConfig = {\n    apiKey: \"AIzaSyBvAPX6QH9wMQgPa3Yc_z9OCmHkG--3Y0Q\",\n    authDomain: \"lawyersaas-9b878.firebaseapp.com\",\n    projectId: \"lawyersaas-9b878\",\n    storageBucket: \"lawyersaas-9b878.firebasestorage.app\",\n    messagingSenderId: \"180290474566\",\n    appId: \"1:180290474566:web:afaac88aa74a40b081b047\",\n    measurementId: \"G-HLCGZRM2TJ\"\n};\nconst app = (0,firebase_app__WEBPACK_IMPORTED_MODULE_0__.getApps)().length ? (0,firebase_app__WEBPACK_IMPORTED_MODULE_0__.getApp)() : (0,firebase_app__WEBPACK_IMPORTED_MODULE_0__.initializeApp)(firebaseConfig);\n// Guard for Next.js SSR: only create browser SDK instances on the client\nconst auth =  false ? 0 : undefined;\nconst db =  false ? 0 : undefined;\n\n__webpack_async_result__();\n} catch(e) { __webpack_async_result__(e); } });//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHBhZ2VzLWRpci1ub2RlKS8uL3NyYy9saWIvZmlyZWJhc2UuanMiLCJtYXBwaW5ncyI6Ijs7Ozs7Ozs7Ozs7QUFBOEQ7QUFDdEI7QUFDVTtBQUVsRCxNQUFNSyxpQkFBaUI7SUFDckJDLFFBQVFDLHlDQUF3QztJQUNoREcsWUFBWUgsa0NBQTRDO0lBQ3hESyxXQUFXTCxrQkFBMkM7SUFDdERPLGVBQWVQLHNDQUErQztJQUM5RFMsbUJBQW1CVCxjQUFvRDtJQUN2RVcsT0FBT1gsMkNBQXVDO0lBQzlDYSxlQUFlYixjQUErQztBQUNoRTtBQUVBLE1BQU1lLE1BQU1yQixxREFBT0EsR0FBR3NCLE1BQU0sR0FBR3JCLG9EQUFNQSxLQUFLRiwyREFBYUEsQ0FBQ0s7QUFFeEQseUVBQXlFO0FBQ2xFLE1BQU1tQixPQUFPLE1BQTZCLEdBQUdyQixDQUFZbUIsR0FBR0csVUFBVTtBQUN0RSxNQUFNQyxLQUFLLE1BQTZCLEdBQUd0QixDQUFpQmtCLEdBQUdHLFVBQVUiLCJzb3VyY2VzIjpbIkQ6XFxsYXd5ZXJTYWFTQXBwXFxzcmNcXGxpYlxcZmlyZWJhc2UuanMiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgaW5pdGlhbGl6ZUFwcCwgZ2V0QXBwcywgZ2V0QXBwIH0gZnJvbSAnZmlyZWJhc2UvYXBwJztcclxuaW1wb3J0IHsgZ2V0QXV0aCB9IGZyb20gJ2ZpcmViYXNlL2F1dGgnO1xyXG5pbXBvcnQgeyBnZXRGaXJlc3RvcmUgfSBmcm9tICdmaXJlYmFzZS9maXJlc3RvcmUnO1xyXG5cclxuY29uc3QgZmlyZWJhc2VDb25maWcgPSB7XHJcbiAgYXBpS2V5OiBwcm9jZXNzLmVudi5ORVhUX1BVQkxJQ19GSVJFQkFTRV9BUElfS0VZLFxyXG4gIGF1dGhEb21haW46IHByb2Nlc3MuZW52Lk5FWFRfUFVCTElDX0ZJUkVCQVNFX0FVVEhfRE9NQUlOLFxyXG4gIHByb2plY3RJZDogcHJvY2Vzcy5lbnYuTkVYVF9QVUJMSUNfRklSRUJBU0VfUFJPSkVDVF9JRCxcclxuICBzdG9yYWdlQnVja2V0OiBwcm9jZXNzLmVudi5ORVhUX1BVQkxJQ19GSVJFQkFTRV9TVE9SQUdFX0JVQ0tFVCxcclxuICBtZXNzYWdpbmdTZW5kZXJJZDogcHJvY2Vzcy5lbnYuTkVYVF9QVUJMSUNfRklSRUJBU0VfTUVTU0FHSU5HX1NFTkRFUl9JRCxcclxuICBhcHBJZDogcHJvY2Vzcy5lbnYuTkVYVF9QVUJMSUNfRklSRUJBU0VfQVBQX0lELFxyXG4gIG1lYXN1cmVtZW50SWQ6IHByb2Nlc3MuZW52Lk5FWFRfUFVCTElDX0ZJUkVCQVNFX01FQVNVUkVNRU5UX0lEXHJcbn07XHJcblxyXG5jb25zdCBhcHAgPSBnZXRBcHBzKCkubGVuZ3RoID8gZ2V0QXBwKCkgOiBpbml0aWFsaXplQXBwKGZpcmViYXNlQ29uZmlnKTtcclxuXHJcbi8vIEd1YXJkIGZvciBOZXh0LmpzIFNTUjogb25seSBjcmVhdGUgYnJvd3NlciBTREsgaW5zdGFuY2VzIG9uIHRoZSBjbGllbnRcclxuZXhwb3J0IGNvbnN0IGF1dGggPSB0eXBlb2Ygd2luZG93ICE9PSAndW5kZWZpbmVkJyA/IGdldEF1dGgoYXBwKSA6IHVuZGVmaW5lZDtcclxuZXhwb3J0IGNvbnN0IGRiID0gdHlwZW9mIHdpbmRvdyAhPT0gJ3VuZGVmaW5lZCcgPyBnZXRGaXJlc3RvcmUoYXBwKSA6IHVuZGVmaW5lZDtcclxuXHJcblxyXG4iXSwibmFtZXMiOlsiaW5pdGlhbGl6ZUFwcCIsImdldEFwcHMiLCJnZXRBcHAiLCJnZXRBdXRoIiwiZ2V0RmlyZXN0b3JlIiwiZmlyZWJhc2VDb25maWciLCJhcGlLZXkiLCJwcm9jZXNzIiwiZW52IiwiTkVYVF9QVUJMSUNfRklSRUJBU0VfQVBJX0tFWSIsImF1dGhEb21haW4iLCJORVhUX1BVQkxJQ19GSVJFQkFTRV9BVVRIX0RPTUFJTiIsInByb2plY3RJZCIsIk5FWFRfUFVCTElDX0ZJUkVCQVNFX1BST0pFQ1RfSUQiLCJzdG9yYWdlQnVja2V0IiwiTkVYVF9QVUJMSUNfRklSRUJBU0VfU1RPUkFHRV9CVUNLRVQiLCJtZXNzYWdpbmdTZW5kZXJJZCIsIk5FWFRfUFVCTElDX0ZJUkVCQVNFX01FU1NBR0lOR19TRU5ERVJfSUQiLCJhcHBJZCIsIk5FWFRfUFVCTElDX0ZJUkVCQVNFX0FQUF9JRCIsIm1lYXN1cmVtZW50SWQiLCJORVhUX1BVQkxJQ19GSVJFQkFTRV9NRUFTVVJFTUVOVF9JRCIsImFwcCIsImxlbmd0aCIsImF1dGgiLCJ1bmRlZmluZWQiLCJkYiJdLCJpZ25vcmVMaXN0IjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///(pages-dir-node)/./src/lib/firebase.js\n");
+
+/***/ }),
+
+/***/ "firebase/app":
+/*!*******************************!*\
+  !*** external "firebase/app" ***!
+  \*******************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = import("firebase/app");;
+
+/***/ }),
+
+/***/ "firebase/auth":
+/*!********************************!*\
+  !*** external "firebase/auth" ***!
+  \********************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = import("firebase/auth");;
+
+/***/ }),
+
+/***/ "firebase/firestore":
+/*!*************************************!*\
+  !*** external "firebase/firestore" ***!
+  \*************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = import("firebase/firestore");;
+
+/***/ }),
+
+/***/ "react":
+/*!************************!*\
+  !*** external "react" ***!
+  \************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("react");
+
+/***/ }),
+
+/***/ "react/jsx-dev-runtime":
+/*!****************************************!*\
+  !*** external "react/jsx-dev-runtime" ***!
+  \****************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("react/jsx-dev-runtime");
+
+/***/ })
+
+};
+;
+
+// load runtime
+var __webpack_require__ = require("../webpack-runtime.js");
+__webpack_require__.C(exports);
+var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
+var __webpack_exports__ = (__webpack_exec__("(pages-dir-node)/./pages/_app.jsx"));
+module.exports = __webpack_exports__;
+
+})();
