@@ -144,13 +144,22 @@ export function CaseDetails() {
       <Navbar />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <button
-          onClick={() => router.push('/dashboard')}
-          className="flex items-center space-x-2 text-slate-600 hover:text-slate-900 mb-6 transition"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to Dashboard</span>
-        </button>
+        <div className="flex items-center justify-between mb-6">
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="flex items-center space-x-2 text-slate-600 hover:text-slate-900 transition"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back to Dashboard</span>
+          </button>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center space-x-2 px-4 py-2 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add Next Hearing</span>
+          </button>
+        </div>
 
         <div className={`bg-white rounded-2xl shadow-sm border p-8 mb-6 ${caseData.case_status === 'closed' ? 'border-slate-300 bg-slate-50' : 'border-slate-200'}`}>
           <div className="flex justify-between items-start mb-6">
@@ -350,13 +359,6 @@ export function CaseDetails() {
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-slate-900">Hearing History</h2>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="flex items-center space-x-2 px-4 py-2 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Add Next Hearing</span>
-            </button>
           </div>
 
           {hearings.length === 0 ? (

@@ -6,6 +6,9 @@ export function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState('');
+  const [mobile, setMobile] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
@@ -15,9 +18,17 @@ export function AuthForm() {
     setError('');
     setLoading(true);
 
+    if (!isLogin) {
+      if (password !== confirmPassword) {
+        setLoading(false);
+        setError('Passwords do not match.');
+        return;
+      }
+    }
+
     const { error: authError } = isLogin
       ? await signIn(email, password)
-      : await signUp(email, password);
+      : await signUp(email, password, { name, mobile });
 
     if (authError) {
       setError(authError.message || 'An error occurred. Please try again.');
@@ -25,6 +36,9 @@ export function AuthForm() {
       setError('');
       setEmail('');
       setPassword('');
+      setConfirmPassword('');
+      setName('');
+      setMobile('');
       setIsLogin(true);
     }
 
@@ -52,6 +66,37 @@ export function AuthForm() {
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
               {error}
             </div>
+          )}
+
+          {!isLogin && (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                  placeholder="John Doe"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Mobile Number
+                </label>
+                <input
+                  type="tel"
+                  value={mobile}
+                  onChange={(e) => setMobile(e.target.value)}
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                  placeholder="+91 98765 43210"
+                />
+              </div>
+            </>
           )}
 
           <div>
@@ -82,6 +127,23 @@ export function AuthForm() {
               minLength={6}
             />
           </div>
+
+          {!isLogin && (
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                placeholder="••••••••"
+                minLength={6}
+              />
+            </div>
+          )}
 
         <button
             type="submit"

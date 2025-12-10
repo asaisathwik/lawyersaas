@@ -4,7 +4,7 @@ import { CaseCard } from '../components/CaseCard';
 import { AddCaseModal } from '../components/AddCaseModal';
 import { EditCaseModal } from '../components/EditCaseModal';
 import { ConfirmDialog } from '../components/ConfirmDialog';
-import { Plus, Loader2, MoreHorizontal, Pencil, Eye, Trash2 } from 'lucide-react';
+import { Plus, Loader2, MoreHorizontal, Pencil, Eye, Trash2, Search } from 'lucide-react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../lib/firebase';
@@ -24,6 +24,7 @@ export function Dashboard() {
   const [confirmAction, setConfirmAction] = useState(null); // () => Promise<void>
   const [confirmConfig, setConfirmConfig] = useState({ title: '', description: '', confirmText: 'Confirm' });
   const [openMenuId, setOpenMenuId] = useState(null);
+  const [search, setSearch] = useState('');
 
   const fetchCases = async () => {
     if (!user?.id) {
@@ -50,6 +51,31 @@ export function Dashboard() {
   useEffect(() => {
     fetchCases();
   }, [user]);
+
+  useEffect(() => {
+    setOpenMenuId(null);
+  }, [search]);
+
+  const normalizedIncludes = (value, term) => {
+    if (!term) return false;
+    const v = (value || '').toString().toLowerCase();
+    return v.includes(term);
+  };
+
+  const getFilteredCases = () => {
+    const term = search.trim().toLowerCase();
+    if (!term) return cases;
+    return cases.filter((c) =>
+      normalizedIncludes(c.case_number, term) ||
+      normalizedIncludes(c.client_name, term) ||
+      normalizedIncludes(c.client_phone, term) ||
+      normalizedIncludes(c.case_type, term) ||
+      normalizedIncludes(c.court_name, term) ||
+      normalizedIncludes(c.first_party, term) ||
+      normalizedIncludes(c.second_party, term) ||
+      normalizedIncludes(c.next_stage, term)
+    );
+  };
 
 
   const promptToggleStatus = (caseItem) => {
@@ -185,19 +211,39 @@ export function Dashboard() {
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold text-slate-900 mb-2">Your Cases</h1>
             <p className="text-slate-600">Manage and track all your legal cases</p>
           </div>
 
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center space-x-2 px-6 py-3 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition shadow-sm"
-          >
-            <Plus className="w-5 h-5" />
-            <span>Add New Case</span>
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-end">
+            <div className="relative">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search cases, clients, courts..."
+                className="w-full sm:w-72 pl-9 pr-10 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+              />
+              {search && (
+                <button
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-900"
+                  onClick={() => setSearch('')}
+                >
+                  ×
+                </button>
+              )}
+            </div>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center space-x-2 px-6 py-3 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition shadow-sm"
+            >
+              <Plus className="w-5 h-5" />
+              <span>Add New Case</span>
+            </button>
+          </div>
 
         </div>
         {/* Stats */}
@@ -236,8 +282,13 @@ export function Dashboard() {
             </button>
           </div>
         ) : (
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+          <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-visible">
             <div className="overflow-x-auto" onClick={() => setOpenMenuId(null)}>
+              {search && getFilteredCases().length === 0 && (
+                <div className="p-6 text-center text-slate-600">
+                  No results for "<span className="font-medium">{search}</span>".
+                </div>
+              )}
               <table className="min-w-full divide-y divide-slate-200">
                 <thead className="bg-slate-50">
                   <tr>
@@ -252,7 +303,7 @@ export function Dashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
-                  {cases.map((c) => {
+                  {getFilteredCases().map((c) => {
                     const next = c.next_hearing_date
                       ? new Date(c.next_hearing_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
                       : '-';
@@ -289,7 +340,7 @@ export function Dashboard() {
                           </button>
                           {openMenuId === c.id && (
                             <div
-                              className="absolute right-0 z-20 mt-2 w-40 bg-white border border-slate-200 rounded-lg shadow-lg"
+                              className="absolute right-0 z-50 mt-2 w-40 bg-white border border-slate-200 rounded-lg shadow-lg"
                               onClick={(e) => e.stopPropagation()}
                             >
                               <button

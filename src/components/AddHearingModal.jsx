@@ -57,8 +57,8 @@ export function AddHearingModal({ isOpen, onClose, caseId, onHearingAdded }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl w-full max-w-md">
-        <div className="border-b border-slate-200 px-6 py-4 flex justify-between items-center">
+      <div className="bg-white rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center">
           <h2 className="text-xl font-bold text-slate-900">Add Next Hearing</h2>
           <button
             onClick={onClose}
@@ -68,7 +68,7 @@ export function AddHearingModal({ isOpen, onClose, caseId, onHearingAdded }) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
               {error}

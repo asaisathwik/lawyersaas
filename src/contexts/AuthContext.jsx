@@ -50,11 +50,22 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const signUp = async (email, password) => {
+  const signUp = async (email, password, profile = {}) => {
     try {
       if (!auth) throw new Error('Auth is not available on the server');
       const { user: firebaseUser } = await createUserWithEmailAndPassword(auth, email, password);
       setUser({ id: firebaseUser.uid, email: firebaseUser.email || '' });
+      try {
+        if (db) {
+          const userRef = doc(db, 'users', firebaseUser.uid);
+          await setDoc(userRef, {
+            email: firebaseUser.email || email,
+            name: profile.name || '',
+            mobile: profile.mobile || '',
+            created_at: new Date().toISOString(),
+          }, { merge: true });
+        }
+      } catch {}
       return { error: null };
     } catch (err) {
       return { error: err };
