@@ -236,18 +236,18 @@ export function Dashboard() {
                 </button>
               )}
             </div>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="flex items-center space-x-2 px-6 py-3 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition shadow-sm"
-            >
-              <Plus className="w-5 h-5" />
-              <span>Add New Case</span>
-            </button>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center space-x-2 px-6 py-3 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition shadow-sm"
+          >
+            <Plus className="w-5 h-5" />
+            <span>Add New Case</span>
+          </button>
           </div>
 
         </div>
         {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
           <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
             <p className="text-sm text-slate-600 mb-1">Total Cases</p>
             <p className="text-3xl font-bold text-slate-900">{cases.length}</p>
@@ -294,10 +294,10 @@ export function Dashboard() {
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Case No</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Client</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Type</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Court</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase hidden md:table-cell">Type</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase hidden md:table-cell">Court</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Next Hearing</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Next Stage</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase hidden md:table-cell">Next Stage</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Status</th>
                     <th className="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase">Actions</th>
                   </tr>
@@ -319,10 +319,10 @@ export function Dashboard() {
                           <div className="font-medium text-slate-900">{c.client_name}</div>
                           <div className="text-slate-600">{c.client_phone}</div>
                         </td>
-                        <td className="px-6 py-3 text-sm text-slate-700">{c.case_type || '-'}</td>
-                        <td className="px-6 py-3 text-sm text-slate-700">{c.court_name || '-'}</td>
+                        <td className="px-6 py-3 text-sm text-slate-700 hidden md:table-cell">{c.case_type || '-'}</td>
+                        <td className="px-6 py-3 text-sm text-slate-700 hidden md:table-cell">{c.court_name || '-'}</td>
                         <td className="px-6 py-3 text-sm text-slate-700">{next}</td>
-                        <td className="px-6 py-3 text-sm text-slate-700">{c.next_stage || '-'}</td>
+                        <td className="px-6 py-3 text-sm text-slate-700 hidden md:table-cell">{c.next_stage || '-'}</td>
                         <td className="px-6 py-3 text-sm">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${isClosed ? 'bg-slate-100 text-slate-700' : 'bg-green-100 text-green-700'}`}>
                             {isClosed ? 'Closed' : 'Active'}

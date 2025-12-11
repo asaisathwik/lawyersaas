@@ -1,4 +1,4 @@
-import { Resend } from 'resend';
+import sgMail from '@sendgrid/mail';
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import {
   getFirestore,
@@ -88,18 +88,23 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const RESEND_API_KEY = process.env.RESEND_API_KEY;
-    const FROM = process.env.NOTIFY_FROM_EMAIL || 'onboarding@resend.dev';
-    if (!RESEND_API_KEY) {
-      return res.status(500).json({ error: 'Missing RESEND_API_KEY' });
+    const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
+    const FROM = process.env.NOTIFY_FROM_EMAIL; // must match verified Single Sender or domain sender
+    if (!SENDGRID_API_KEY || !FROM) {
+      return res.status(500).json({ error: 'Missing SENDGRID_API_KEY or NOTIFY_FROM_EMAIL' });
     }
-    const resend = new Resend(RESEND_API_KEY);
+    sgMail.setApiKey(SENDGRID_API_KEY);
     const db = getDb();
 
     const now = new Date();
     const { dateStr: todayStr, HH, MM } = getISTParts(now);
-    const withinDefaultTime = isWithinWindow('18:00', parseInt(HH, 10), parseInt(MM, 10), 10);
-    const tomorrowStr = addDaysIST(1);
+    // Allow configuring a single constant daily send time and offset via env
+    const DAILY_HHMM = process.env.NOTIFY_DAILY_HHMM || '18:00'; // IST
+    const OFFSET_DAYS = Number.isFinite(parseInt(process.env.NOTIFY_OFFSET_DAYS || '', 10))
+      ? parseInt(process.env.NOTIFY_OFFSET_DAYS || '1', 10)
+      : 1; // 1 => day-before, 0 => same-day
+    const withinDefaultTime = isWithinWindow(DAILY_HHMM, parseInt(HH, 10), parseInt(MM, 10), 10);
+    const targetDateStr = addDaysIST(OFFSET_DAYS);
 
     // Collect candidates:
     // 1) Custom schedule for today (hearing_date == today && notification_time ~ now)
@@ -112,11 +117,11 @@ export default async function handler(req, res) {
       }
     });
 
-    // 2) Default schedule day-before at 18:00 (hearing_date == tomorrow && no notification_time)
+    // 2) Default schedule at configured time (hearing_date == target && no notification_time)
     const defaultDue = [];
     if (withinDefaultTime) {
-      const tomorrowSnap = await getDocs(query(collection(db, 'hearings'), where('hearing_date', '==', tomorrowStr)));
-      tomorrowSnap.forEach((d) => {
+      const targetSnap = await getDocs(query(collection(db, 'hearings'), where('hearing_date', '==', targetDateStr)));
+      targetSnap.forEach((d) => {
         const h = d.data();
         if (!h.notification_time) {
           defaultDue.push({ id: d.id, ...h });
@@ -161,14 +166,17 @@ export default async function handler(req, res) {
       const email = userSnap.exists() ? userSnap.data()?.email || '' : '';
       if (!email) continue;
       const html = buildEmailHtml(list);
-      const resp = await resend.emails.send({
-        from: FROM,
-        to: email,
-        subject: 'Hearing Reminder',
-        html,
-      });
-      if (!resp?.error) {
+      try {
+        await sgMail.send({
+          to: email,
+          from: FROM,
+          subject: 'Hearing Reminder',
+          html,
+          text: list.map(l => `${l.date} — ${l.client_name} (${l.case_number})`).join('\n'),
+        });
         sent += 1;
+      } catch (e) {
+        // Continue other users even if one fails
       }
     }
 
