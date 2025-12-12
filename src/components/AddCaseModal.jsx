@@ -12,6 +12,7 @@ export function AddCaseModal({ isOpen, onClose, onCaseAdded }) {
     client_name: '',
     client_phone: '',
     case_number: '',
+    cnr_number: '',
     case_type: '',
     court_name: '',
     first_hearing_date: '',
@@ -56,6 +57,7 @@ export function AddCaseModal({ isOpen, onClose, onCaseAdded }) {
         client_name: '',
         client_phone: '',
         case_number: '',
+        cnr_number: '',
         case_type: '',
         court_name: '',
         first_hearing_date: '',
@@ -133,6 +135,19 @@ export function AddCaseModal({ isOpen, onClose, onCaseAdded }) {
                 onChange={(e) => setFormData({ ...formData, next_stage: e.target.value })}
                 className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
                 placeholder="Trial / Evidence / Arguments / ..."
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                CNR Number
+              </label>
+              <input
+                type="text"
+                value={formData.cnr_number}
+                onChange={(e) => setFormData({ ...formData, cnr_number: e.target.value })}
+                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                placeholder="e.g., MHXX01-000000-20XX"
               />
             </div>
 

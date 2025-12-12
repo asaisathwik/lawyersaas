@@ -10,6 +10,7 @@ export function EditCaseModal({ isOpen, onClose, caseId, onCaseUpdated }) {
     client_name: '',
     client_phone: '',
     case_number: '',
+    cnr_number: '',
     case_type: '',
     court_name: '',
     first_hearing_date: '',
@@ -38,6 +39,7 @@ export function EditCaseModal({ isOpen, onClose, caseId, onCaseUpdated }) {
             client_name: d.client_name || '',
             client_phone: d.client_phone || '',
             case_number: d.case_number || '',
+            cnr_number: d.cnr_number || '',
             case_type: d.case_type || '',
             court_name: d.court_name || '',
             first_hearing_date: d.first_hearing_date || '',
@@ -126,6 +128,19 @@ export function EditCaseModal({ isOpen, onClose, caseId, onCaseUpdated }) {
                 onChange={(e) => setFormData({ ...formData, next_stage: e.target.value })}
                 className="w-full px-4 py-2.5 border border-slate-300 rounded-lg"
                 placeholder="Trial / Evidence / Arguments / ..."
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                CNR Number
+              </label>
+              <input
+                type="text"
+                value={formData.cnr_number}
+                onChange={(e) => setFormData({ ...formData, cnr_number: e.target.value })}
+                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg"
+                placeholder="e.g., MHXX01-000000-20XX"
               />
             </div>
 

@@ -4,6 +4,7 @@ import { Navbar } from '../components/Navbar';
 import { AddHearingModal } from '../components/AddHearingModal';
 import { EditHearingModal } from '../components/EditHearingModal';
 import { ConfirmDialog } from '../components/ConfirmDialog';
+import UploadDocsModal from '../components/UploadDocsModal';
 import {
   ArrowLeft,
   Phone,
@@ -16,8 +17,9 @@ import {
   CheckCircle,
   X
 } from 'lucide-react';
-import { db } from '../lib/firebase';
+import { db, storage } from '../lib/firebase';
 import { doc, getDoc, updateDoc, deleteDoc, collection, getDocs, query, where, orderBy, limit } from 'firebase/firestore';
+import { deleteObject, ref as storageRef } from 'firebase/storage';
 
 export function CaseDetails() {
   const router = useRouter();
@@ -31,6 +33,8 @@ export function CaseDetails() {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [hearingToEdit, setHearingToEdit] = useState(null);
   const [hearingToDelete, setHearingToDelete] = useState(null);
+  const [deletingDoc, setDeletingDoc] = useState(null);
+  const [uploadOpen, setUploadOpen] = useState(false);
 
   const fetchCaseDetails = async () => {
     if (!id) return;
@@ -113,6 +117,35 @@ export function CaseDetails() {
     }
   };
 
+  const handleDeleteDocument = async (file) => {
+    if (!id || !file?.url) return;
+    try {
+      setDeletingDoc(file.url);
+      // Try to delete from storage (if possible)
+      try {
+        const r = storageRef(storage, file.url);
+        await deleteObject(r);
+      } catch (e) {
+        // ignore storage delete failures; still remove metadata
+      }
+      // Remove from document list
+      const fresh = await getDoc(doc(db, 'cases', id));
+      if (typeof fresh.data === 'function') {
+        const cur = fresh.data();
+        const arr = Array.isArray(cur?.documents) ? cur.documents.filter((d) => d.url !== file.url) : [];
+        await updateDoc(doc(db, 'cases', id), {
+          documents: arr,
+          updated_at: new Date().toISOString(),
+        });
+        setCaseData((prev) => prev ? ({ ...prev, documents: arr }) : prev);
+      }
+    } catch (e) {
+      console.error('Failed to delete document', e);
+    } finally {
+      setDeletingDoc(null);
+    }
+  };
+
   useEffect(() => {
     fetchCaseDetails();
   }, [id]);
@@ -152,13 +185,21 @@ export function CaseDetails() {
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Dashboard</span>
           </button>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add Next Hearing</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center space-x-2 px-4 py-2 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add Next Hearing</span>
+            </button>
+            <button
+              onClick={() => setIsModalOpen(false) || setHearingToEdit(null) || setUploadOpen(true)}
+              className="flex items-center space-x-2 px-4 py-2 border border-slate-300 text-slate-700 rounded-lg font-medium hover:bg-slate-50 transition"
+            >
+              <span>Add Documents</span>
+            </button>
+          </div>
         </div>
 
         <div className={`bg-white rounded-2xl shadow-sm border p-8 mb-6 ${caseData.case_status === 'closed' ? 'border-slate-300 bg-slate-50' : 'border-slate-200'}`}>
@@ -222,6 +263,16 @@ export function CaseDetails() {
                 <p className="text-slate-900 font-medium">{caseData.case_number}</p>
               </div>
             </div>
+
+            {caseData.cnr_number && (
+              <div className="flex items-start space-x-3">
+                <FileText className="w-5 h-5 text-slate-400 mt-0.5" />
+                <div>
+                  <p className="text-sm text-slate-500 mb-1">CNR Number</p>
+                  <p className="text-slate-900 font-medium">{caseData.cnr_number}</p>
+                </div>
+              </div>
+            )}
 
             <div className="flex items-start space-x-3">
               <Building className="w-5 h-5 text-slate-400 mt-0.5" />
@@ -337,7 +388,7 @@ export function CaseDetails() {
               </div>
             </div>
 
-            {caseData.next_stage && (
+          {caseData.next_stage && (
               <div className="flex items-start space-x-3">
                 <Calendar className="w-5 h-5 text-slate-400 mt-0.5" />
                 <div>
@@ -346,9 +397,62 @@ export function CaseDetails() {
                 </div>
               </div>
             )}
+
+            {caseData.first_hearing_date && (
+              <div className="flex items-start space-x-3">
+                <Calendar className="w-5 h-5 text-slate-400 mt-0.5" />
+                <div>
+                  <p className="text-sm text-slate-500 mb-1">First Hearing</p>
+                  <p className="text-slate-900 font-medium">
+                    {new Date(caseData.first_hearing_date).toLocaleDateString('en-IN', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    })}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
-          {caseData.notes && (
+        {/* Documents */}
+        {Array.isArray(caseData.documents) && caseData.documents.length > 0 && (
+          <div className="border-t border-slate-200 pt-6 mb-6">
+            <h3 className="text-lg font-semibold text-slate-900 mb-3">Documents</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {caseData.documents.map((f) => {
+                const isImage = typeof f.type === 'string' && f.type.startsWith('image/');
+                return (
+                  <div key={f.url} className="flex items-center gap-3 p-3 border border-slate-200 rounded-lg">
+                    <div className="w-16 h-16 flex items-center justify-center bg-slate-100 rounded overflow-hidden">
+                      {isImage ? (
+                        <img src={f.url} alt={f.name || 'file'} className="object-cover w-full h-full" />
+                      ) : (
+                        <span className="text-slate-500 text-xs">FILE</span>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium text-slate-900 truncate">{f.name || 'Attachment'}</div>
+                      <div className="text-xs text-slate-600">{Math.round((f.size || 0) / 1024)} KB</div>
+                      <div className="mt-1 flex gap-3 text-sm">
+                        <a className="text-slate-700 hover:underline" href={f.url} target="_blank" rel="noreferrer">Open</a>
+                        <button
+                          className="text-red-600 hover:underline disabled:opacity-50"
+                          onClick={() => handleDeleteDocument(f)}
+                          disabled={deletingDoc === f.url}
+                        >
+                          {deletingDoc === f.url ? 'Deleting…' : 'Delete'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {caseData.notes && (
             <div className="border-t border-slate-200 pt-6">
               <p className="text-sm text-slate-500 mb-2">Notes</p>
               <p className="text-slate-700 whitespace-pre-wrap">{caseData.notes}</p>
@@ -360,6 +464,26 @@ export function CaseDetails() {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-slate-900">Hearing History</h2>
           </div>
+
+          {caseData.documents?.length ? (
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold text-slate-900 mb-3">Documents</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {caseData.documents.map((d, idx) => (
+                  <a
+                    key={idx}
+                    href={d.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center justify-between border border-slate-200 rounded-lg p-3 hover:bg-slate-50"
+                  >
+                    <span className="truncate">{d.name}</span>
+                    <span className="text-xs text-slate-500">{Math.ceil((d.size || 0)/1024)} KB</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ) : null}
 
           {hearings.length === 0 ? (
             <div className="text-center py-12">
@@ -423,6 +547,13 @@ export function CaseDetails() {
           await syncNextHearingDate();
           await fetchCaseDetails();
         }}
+      />
+
+      <UploadDocsModal
+        isOpen={uploadOpen}
+        onClose={() => setUploadOpen(false)}
+        caseId={id}
+        onUploaded={fetchCaseDetails}
       />
 
       <EditHearingModal

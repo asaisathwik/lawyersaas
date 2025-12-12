@@ -46,7 +46,14 @@ export function AuthProvider({ children }) {
       setUser({ id: firebaseUser.uid, email: firebaseUser.email || '' });
       return { error: null };
     } catch (err) {
-      return { error: err };
+      // Friendly messages
+      const code = err?.code || '';
+      let message = 'Something went wrong. Please try again.';
+      if (code.includes('user-not-found')) message = 'No account found for that email.';
+      else if (code.includes('wrong-password')) message = 'Incorrect password. Please try again.';
+      else if (code.includes('invalid-email')) message = 'Please enter a valid email address.';
+      else if (code.includes('too-many-requests')) message = 'Too many attempts. Please wait a moment and try again.';
+      return { error: new Error(message) };
     }
   };
 
@@ -91,5 +98,3 @@ export function useAuth() {
   }
   return context;
 }
-
-

@@ -4,7 +4,8 @@ import { CaseCard } from '../components/CaseCard';
 import { AddCaseModal } from '../components/AddCaseModal';
 import { EditCaseModal } from '../components/EditCaseModal';
 import { ConfirmDialog } from '../components/ConfirmDialog';
-import { Plus, Loader2, MoreHorizontal, Pencil, Eye, Trash2, Search } from 'lucide-react';
+import { Plus, Loader2, MoreHorizontal, Pencil, Eye, Trash2, Search, Paperclip } from 'lucide-react';
+import UploadDocsModal from '../components/UploadDocsModal';
 import { useRouter } from 'next/router';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../lib/firebase';
@@ -25,6 +26,7 @@ export function Dashboard() {
   const [confirmConfig, setConfirmConfig] = useState({ title: '', description: '', confirmText: 'Confirm' });
   const [openMenuId, setOpenMenuId] = useState(null);
   const [search, setSearch] = useState('');
+  const [uploadCaseId, setUploadCaseId] = useState(null);
 
   const fetchCases = async () => {
     if (!user?.id) {
@@ -62,10 +64,44 @@ export function Dashboard() {
     return v.includes(term);
   };
 
+  const escapeRegExp = (s) => {
+    return (s || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  };
+
+  const getHighlightedParts = (text, term) => {
+    const source = (text || '').toString();
+    const t = (term || '').toString().trim();
+    if (!t) return [source];
+    try {
+      const regex = new RegExp(`(${escapeRegExp(t)})`, 'ig');
+      return source.split(regex).filter(Boolean);
+    } catch {
+      return [source];
+    }
+  };
+
+  const Highlight = ({ children }) => {
+    const term = (search || '').trim();
+    const parts = getHighlightedParts(children ?? '', term);
+    const lower = term.toLowerCase();
+    return (
+      <>
+        {parts.map((part, idx) =>
+          term && part.toLowerCase() === lower ? (
+            <mark key={idx} className="bg-yellow-200 rounded px-0.5">{part}</mark>
+          ) : (
+            <span key={idx}>{part}</span>
+          )
+        )}
+      </>
+    );
+  };
+
   const getFilteredCases = () => {
     const term = search.trim().toLowerCase();
     if (!term) return cases;
     return cases.filter((c) =>
+      normalizedIncludes(c.cnr_number, term) ||
       normalizedIncludes(c.case_number, term) ||
       normalizedIncludes(c.client_name, term) ||
       normalizedIncludes(c.client_phone, term) ||
@@ -289,15 +325,22 @@ export function Dashboard() {
                   No results for "<span className="font-medium">{search}</span>".
                 </div>
               )}
+              {search && getFilteredCases().length > 0 && (
+                <div className="px-6 py-3 text-sm text-slate-600">
+                  Showing {getFilteredCases().length} {getFilteredCases().length === 1 ? 'result' : 'results'} for "<span className="font-medium">{search}</span>"
+                </div>
+              )}
               <table className="min-w-full divide-y divide-slate-200">
                 <thead className="bg-slate-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Case No</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">CNR</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Client</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase hidden md:table-cell">Type</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase hidden md:table-cell">Court</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Next Hearing</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase hidden md:table-cell">Next Stage</th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase hidden md:table-cell">Docs</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Status</th>
                     <th className="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase">Actions</th>
                   </tr>
@@ -315,14 +358,28 @@ export function Dashboard() {
                         onClick={() => router.push(`/case/${c.id}`)}
                       >
                         <td className="px-6 py-3 text-sm text-slate-900">{c.case_number || '-'}</td>
-                        <td className="px-6 py-3 text-sm">
-                          <div className="font-medium text-slate-900">{c.client_name}</div>
-                          <div className="text-slate-600">{c.client_phone}</div>
+                        <td className="px-6 py-3 text-sm text-slate-700">
+                          <Highlight>{c.cnr_number || '-'}</Highlight>
                         </td>
-                        <td className="px-6 py-3 text-sm text-slate-700 hidden md:table-cell">{c.case_type || '-'}</td>
-                        <td className="px-6 py-3 text-sm text-slate-700 hidden md:table-cell">{c.court_name || '-'}</td>
+                        <td className="px-6 py-3 text-sm">
+                          <div className="font-medium text-slate-900">
+                            <Highlight>{c.client_name}</Highlight>
+                          </div>
+                          <div className="text-slate-600">
+                            <Highlight>{c.client_phone}</Highlight>
+                          </div>
+                        </td>
+                        <td className="px-6 py-3 text-sm text-slate-700 hidden md:table-cell">
+                          <Highlight>{c.case_type || '-'}</Highlight>
+                        </td>
+                        <td className="px-6 py-3 text-sm text-slate-700 hidden md:table-cell">
+                          <Highlight>{c.court_name || '-'}</Highlight>
+                        </td>
                         <td className="px-6 py-3 text-sm text-slate-700">{next}</td>
-                        <td className="px-6 py-3 text-sm text-slate-700 hidden md:table-cell">{c.next_stage || '-'}</td>
+                        <td className="px-6 py-3 text-sm text-slate-700 hidden md:table-cell">
+                          <Highlight>{c.next_stage || '-'}</Highlight>
+                        </td>
+                        <td className="px-6 py-3 text-sm text-slate-700 hidden md:table-cell">{Array.isArray(c.documents) ? c.documents.length : 0}</td>
                         <td className="px-6 py-3 text-sm">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${isClosed ? 'bg-slate-100 text-slate-700' : 'bg-green-100 text-green-700'}`}>
                             {isClosed ? 'Closed' : 'Active'}
@@ -343,6 +400,15 @@ export function Dashboard() {
                               className="absolute right-0 z-50 mt-2 w-40 bg-white border border-slate-200 rounded-lg shadow-lg"
                               onClick={(e) => e.stopPropagation()}
                             >
+                              <button
+                                className="w-full flex items-center gap-2 px-3 py-2 text-left text-slate-700 hover:bg-slate-50"
+                                onClick={() => {
+                                  setOpenMenuId(null);
+                                  setUploadCaseId(c.id);
+                                }}
+                              >
+                                <Paperclip className="w-4 h-4" /> Add Docs
+                              </button>
                               <button
                                 className="w-full flex items-center gap-2 px-3 py-2 text-left text-slate-700 hover:bg-slate-50"
                                 onClick={() => {
@@ -405,6 +471,13 @@ export function Dashboard() {
         onConfirm={handleConfirm}
         onCancel={() => setConfirmOpen(false)}
         loading={confirmLoading}
+      />
+
+      <UploadDocsModal
+        isOpen={!!uploadCaseId}
+        onClose={() => setUploadCaseId(null)}
+        caseId={uploadCaseId}
+        onUploaded={fetchCases}
       />
     </div>
   );

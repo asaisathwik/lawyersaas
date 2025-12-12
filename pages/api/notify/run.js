@@ -64,16 +64,132 @@ function isWithinWindow(targetHHMM, nowHH, nowMM, windowMinutes = 5) {
   return Math.abs(nowTotal - tgtTotal) <= windowMinutes;
 }
 
-function buildEmailHtml(hearings) {
-  const items = hearings.map(h =>
-    `<li><strong>${h.date}</strong> — ${h.client_name || 'Case'} (${h.case_number || h.case_id}) at ${h.court_name || 'court'}${h.notes ? ` — ${h.notes}` : ''}${h.next_stage ? ` — Next Stage: ${h.next_stage}` : ''}</li>`
-  ).join('');
+function formatIndianDate(isoDate) {
+  try {
+    return new Date(isoDate).toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'Asia/Kolkata',
+    });
+  } catch {
+    return isoDate;
+  }
+}
+
+function buildEmailHtml(hearings, opts = {}) {
+  const {
+    brandName = 'Case Manager',
+    logoUrl = '',
+    supportEmail = '',
+    greetingName = '',
+    appUrl = '',
+  } = opts || {};
+
+  const headerLogo = logoUrl
+    ? `<img src="${logoUrl}" height="32" alt="${brandName}" style="display:block; max-height:32px;" />`
+    : `<div style="font-weight:700;font-size:18px;color:#0f172a">${brandName}</div>`;
+
+  const rows = hearings.map((h) => {
+    const dateStr = formatIndianDate(h.date);
+    const nextStage = h.next_stage ? `<div style="color:#475569;font-size:12px;margin-top:4px;">Next Stage: ${h.next_stage}</div>` : '';
+    const notes = h.notes ? `<div style="color:#475569;font-size:12px;margin-top:4px;">Notes: ${h.notes}</div>` : '';
+    const viewUrl = appUrl && h.case_id ? `${appUrl.replace(/\/$/, '')}/case/${h.case_id}` : '';
+    const viewLink = viewUrl ? `<div style="margin-top:8px;"><a href="${viewUrl}" style="color:#0f172a;text-decoration:none;font-weight:600;">View Case →</a></div>` : '';
+    return `
+      <tr>
+        <td style="padding:12px;border-bottom:1px solid #e2e8f0;">
+          <div style="font-weight:600;color:#0f172a;">${dateStr}</div>
+          <div style="color:#0f172a;margin-top:2px;">
+            ${h.client_name || 'Case'} ${h.case_number ? `(${h.case_number})` : ''}
+          </div>
+          <div style="color:#475569;margin-top:2px;">${h.court_name || 'Court'}</div>
+          ${nextStage}
+          ${notes}
+          ${viewLink}
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  const introGreeting = greetingName
+    ? `Hi ${greetingName},`
+    : 'Hello,';
+
+  const supportBlock = supportEmail
+    ? `<div style="color:#64748b;font-size:12px;">Questions? Contact us at <a href="mailto:${supportEmail}" style="color:#0f172a;text-decoration:none;">${supportEmail}</a>.</div>`
+    : '';
+
+  const actionButton = appUrl
+    ? `<a href="${appUrl}" style="display:inline-block;background:#0f172a;color:#ffffff;text-decoration:none;padding:10px 16px;border-radius:8px;font-weight:600;">Open ${brandName}</a>`
+    : '';
+
   return `
-    <div>
-      <p>You have the following upcoming hearing(s):</p>
-      <ul>${items}</ul>
-    </div>
+<!doctype html>
+<html>
+  <body style="margin:0;padding:0;background:#f8fafc;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:20px 0;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;">
+            <tr>
+              <td style="padding:16px 20px;border-bottom:1px solid #e2e8f0;">
+                ${headerLogo}
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:20px;">
+                <div style="color:#0f172a;font-size:16px;margin-bottom:8px;">${introGreeting}</div>
+                <div style="color:#334155;font-size:14px;margin-bottom:16px;">
+                  You have the following upcoming hearing(s):
+                </div>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e2e8f0;border-radius:8px;">
+                  ${rows}
+                </table>
+                <div style="margin-top:16px;">
+                  ${actionButton}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:16px 20px;border-top:1px solid #e2e8f0;">
+                <div style="color:#64748b;font-size:12px;margin-bottom:4px;">Times shown are based on IST.</div>
+                ${supportBlock}
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
   `;
+}
+
+function buildEmailText(hearings, opts = {}) {
+  const { brandName = 'Case Manager', greetingName = '' } = opts || {};
+  const hello = greetingName ? `Hi ${greetingName},` : 'Hello,';
+  const list = hearings.map((h) => {
+    const dateStr = formatIndianDate(h.date);
+    const title = `${h.client_name || 'Case'}${h.case_number ? ` (${h.case_number})` : ''}`;
+    const court = h.court_name || 'Court';
+    const extras = [h.next_stage ? `Next Stage: ${h.next_stage}` : '', h.notes ? `Notes: ${h.notes}` : '']
+      .filter(Boolean)
+      .join(' | ');
+    const base = `• ${dateStr} — ${title} at ${court}`;
+    const viewUrl = opts.appUrl && h.case_id ? `${opts.appUrl.replace(/\/$/, '')}/case/${h.case_id}` : '';
+    const withExtras = extras ? `${base}\n  ${extras}` : base;
+    return viewUrl ? `${withExtras}\n  ${viewUrl}` : withExtras;
+  }).join('\n\n');
+  return `${hello}
+
+You have the following upcoming hearing(s):
+
+${list}
+
+— ${brandName}
+(Times are in IST)
+`;
 }
 
 export default async function handler(req, res) {
@@ -158,22 +274,83 @@ export default async function handler(req, res) {
       userIdToHearings.set(uid, arr);
     }
 
+    const brandName = process.env.NOTIFY_BRAND_NAME || 'Case Manager';
+    const logoUrl = process.env.NOTIFY_LOGO_URL || '';
+    const supportEmail = process.env.NOTIFY_SUPPORT_EMAIL || process.env.NOTIFY_FROM_EMAIL || '';
+    const appUrl = process.env.NOTIFY_APP_URL || '';
+    const templateId = process.env.NOTIFY_SENDGRID_TEMPLATE_ID || '';
+
+    const disableTracking = String(process.env.NOTIFY_DISABLE_TRACKING || '').toLowerCase() === 'true';
+    const bypassList = String(process.env.NOTIFY_BYPASS_LIST || 'true').toLowerCase() === 'true';
+
     let sent = 0;
     for (const [uid, list] of userIdToHearings.entries()) {
       if (!list.length) continue;
       // get user's email from users/{uid}
       const userSnap = await getDoc(doc(db, 'users', uid));
-      const email = userSnap.exists() ? userSnap.data()?.email || '' : '';
+      const userData = userSnap.exists() ? userSnap.data() : {};
+      const email = userData?.email || '';
+      const greetingName = userData?.name || '';
       if (!email) continue;
-      const html = buildEmailHtml(list);
+
+      // Subject: include date if all items share same date
+      const uniqueDates = Array.from(new Set(list.map(l => l.date)));
+      const datePart = uniqueDates.length === 1 ? ` — ${formatIndianDate(uniqueDates[0])}` : '';
+      const subject = `Hearing Reminder${datePart}`;
+
+      const templateOpts = { brandName, logoUrl, supportEmail, greetingName, appUrl };
+      const html = buildEmailHtml(list, templateOpts);
+      const text = buildEmailText(list, templateOpts);
+
+      // Prepare dynamic template data if a SendGrid Dynamic Template is configured
+      const dynamicTemplateData = {
+        brandName,
+        greetingName,
+        supportEmail,
+        appUrl,
+        subject,
+        items: list.map((h) => ({
+          date: h.date,
+          date_formatted: formatIndianDate(h.date),
+          client_name: h.client_name || '',
+          case_number: h.case_number || '',
+          court_name: h.court_name || '',
+          next_stage: h.next_stage || '',
+          notes: h.notes || '',
+          view_url: appUrl && h.case_id ? `${appUrl.replace(/\/$/, '')}/case/${h.case_id}` : '',
+        })),
+      };
       try {
-        await sgMail.send({
-          to: email,
-          from: FROM,
-          subject: 'Hearing Reminder',
-          html,
-          text: list.map(l => `${l.date} — ${l.client_name} (${l.case_number})`).join('\n'),
-        });
+        const msg = templateId
+          ? {
+              to: email,
+              from: { email: FROM, name: brandName },
+              replyTo: supportEmail || undefined,
+              subject,
+              templateId,
+              dynamicTemplateData,
+              categories: ['hearing-reminder'],
+              mailSettings: { bypassListManagement: { enable: bypassList } },
+              trackingSettings: disableTracking ? {
+                clickTracking: { enable: false, enableText: false },
+                openTracking: { enable: false },
+              } : undefined,
+            }
+          : {
+              to: email,
+              from: { email: FROM, name: brandName },
+              replyTo: supportEmail || undefined,
+              subject,
+              html,
+              text,
+              categories: ['hearing-reminder'],
+              mailSettings: { bypassListManagement: { enable: bypassList } },
+              trackingSettings: disableTracking ? {
+                clickTracking: { enable: false, enableText: false },
+                openTracking: { enable: false },
+              } : undefined,
+            };
+        await sgMail.send(msg);
         sent += 1;
       } catch (e) {
         // Continue other users even if one fails

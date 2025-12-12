@@ -1,3 +1,39 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+
+# Vercel / deploy
+.vercel/
+
+# Build tools / caches
+.turbo/
+.cache/
+coverage/
+dist/
+
+# Env and secrets
+.env
+.env*.local
+
+# Editor/OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Misc
+*.swp
+
 logs
 *.log
 npm-debug.log*

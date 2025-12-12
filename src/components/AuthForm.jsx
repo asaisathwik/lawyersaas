@@ -90,6 +90,8 @@ export function AuthForm() {
                 </label>
                 <input
                   type="tel"
+                  required
+                  pattern="^[0-9]{10,}$"
                   value={mobile}
                   onChange={(e) => setMobile(e.target.value)}
                   className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
@@ -120,11 +122,11 @@ export function AuthForm() {
             <input
               type="password"
               required
+              minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
               placeholder="••••••••"
-              minLength={6}
             />
           </div>
 
@@ -136,11 +138,11 @@ export function AuthForm() {
               <input
                 type="password"
                 required
+                minLength={6}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
                 placeholder="••••••••"
-                minLength={6}
               />
             </div>
           )}

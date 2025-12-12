@@ -1,6 +1,7 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -17,5 +18,6 @@ const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 // Guard for Next.js SSR: only create browser SDK instances on the client
 export const auth = typeof window !== 'undefined' ? getAuth(app) : undefined;
 export const db = typeof window !== 'undefined' ? getFirestore(app) : undefined;
+export const storage = typeof window !== 'undefined' ? getStorage(app) : undefined;
 
 

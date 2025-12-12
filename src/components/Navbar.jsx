@@ -1,11 +1,13 @@
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useAuth } from '../contexts/AuthContext';
-import { LogOut, Scale, LayoutDashboard, Calendar } from 'lucide-react';
+import { LogOut, Scale, LayoutDashboard, Calendar, User } from 'lucide-react';
 
 export function Navbar() {
   const { signOut } = useAuth();
   const router = useRouter();
+  const [open, setOpen] = useState(false);
 
   const isActive = (path) => router.pathname === path;
 
@@ -48,16 +50,37 @@ export function Navbar() {
             </div>
           </div>
 
-          <button
-            onClick={async () => {
-              await signOut();
-              router.push('/login');
-            }}
-            className="flex items-center space-x-2 px-4 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="font-medium">Logout</span>
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setOpen((v) => !v)}
+              className="flex items-center gap-2 px-3 py-2 rounded-full border border-slate-300 hover:bg-slate-50 transition"
+            >
+              <User className="w-5 h-5 text-slate-700" />
+            </button>
+            {open && (
+              <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-lg shadow-lg z-50">
+                <button
+                  className="w-full text-left px-3 py-2 text-slate-700 hover:bg-slate-50"
+                  onClick={() => {
+                    setOpen(false);
+                    router.push('/profile');
+                  }}
+                >
+                  Profile
+                </button>
+                <button
+                  className="w-full text-left px-3 py-2 text-red-700 hover:bg-red-50 flex items-center gap-2"
+                  onClick={async () => {
+                    setOpen(false);
+                    await signOut();
+                    router.push('/login');
+                  }}
+                >
+                  <LogOut className="w-4 h-4" /> Logout
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </nav>

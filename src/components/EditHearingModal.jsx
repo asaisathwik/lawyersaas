@@ -9,21 +9,25 @@ export function EditHearingModal({ isOpen, onClose, hearingId, onHearingUpdated 
   const [formData, setFormData] = useState({
     hearing_date: '',
     notes: '',
+    next_stage: '',
+    notify_time: '',
   });
 
   useEffect(() => {
     const load = async () => {
       if (!isOpen || !hearingId) return;
       setError('');
-      try {
-        const snap = await getDoc(doc(db, 'hearings', hearingId));
-        if (snap.exists()) {
-          const data = snap.data();
-          setFormData({
-            hearing_date: data.hearing_date || '',
-            notes: data.notes || '',
-          });
-        }
+    try {
+      const snap = await getDoc(doc(db, 'hearings', hearingId));
+      if (snap.exists()) {
+        const data = snap.data();
+        setFormData({
+          hearing_date: data.hearing_date || '',
+          notes: data.notes || '',
+          next_stage: data.next_stage || '',
+          notify_time: data.notification_time || data.notify_time || '',
+        });
+      }
       } catch (e) {
         setError('Failed to load hearing.');
       }
@@ -39,6 +43,8 @@ export function EditHearingModal({ isOpen, onClose, hearingId, onHearingUpdated 
       await updateDoc(doc(db, 'hearings', hearingId), {
         hearing_date: formData.hearing_date || '',
         notes: formData.notes || '',
+        next_stage: formData.next_stage || '',
+        notification_time: formData.notify_time || '',
       });
       onHearingUpdated && onHearingUpdated();
       onClose && onClose();
@@ -94,6 +100,32 @@ export function EditHearingModal({ isOpen, onClose, hearingId, onHearingUpdated 
               rows={4}
               placeholder="Update notes..."
             />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Next Stage
+              </label>
+              <input
+                type="text"
+                value={formData.next_stage}
+                onChange={(e) => setFormData({ ...formData, next_stage: e.target.value })}
+                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                placeholder="Trial / Evidence / Arguments / ..."
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Notification Time (optional)
+              </label>
+              <input
+                type="time"
+                value={formData.notify_time}
+                onChange={(e) => setFormData({ ...formData, notify_time: e.target.value })}
+                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+              />
+            </div>
           </div>
 
           <div className="flex space-x-3 pt-4">

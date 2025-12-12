@@ -1,0 +1,9 @@
+{
+    "crons": [
+      {
+        "path": "/api/notify/run?secret=LAWYER_NOTIFY_2025",
+        "schedule": "*/5 * * * *"
+      }
+    ]
+  }
+  
