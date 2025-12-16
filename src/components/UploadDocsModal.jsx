@@ -15,6 +15,10 @@ export function UploadDocsModal({ isOpen, onClose, caseId, onUploaded }) {
     e.preventDefault();
     setError('');
     if (!caseId) return;
+    if (!db || !storage) {
+      setError('Storage is not configured. Please check Firebase env variables.');
+      return;
+    }
     if (!files || files.length === 0) {
       setError('Please choose at least one file to upload.');
       return;
@@ -24,7 +28,8 @@ export function UploadDocsModal({ isOpen, onClose, caseId, onUploaded }) {
       const tasks = files.map(async (f) => {
         const path = `cases/${caseId}/${Date.now()}_${f.name}`;
         const r = ref(storage, path);
-        await uploadBytes(r, f);
+        const metadata = { contentType: f.type || 'application/octet-stream' };
+        await uploadBytes(r, f, metadata);
         const url = await getDownloadURL(r);
         return {
           name: f.name,
@@ -36,10 +41,16 @@ export function UploadDocsModal({ isOpen, onClose, caseId, onUploaded }) {
       });
       const results = await Promise.allSettled(tasks);
       const uploaded = results.filter(x => x.status === 'fulfilled').map(x => x.value);
+      const failures = results.filter(x => x.status === 'rejected').map(x => x.reason?.message || 'Upload failed');
       if (uploaded.length) {
         await updateDoc(doc(db, 'cases', caseId), {
           documents: arrayUnion(...uploaded),
+          updated_at: new Date().toISOString(),
         });
+      }
+      if (!uploaded.length && failures.length) {
+        setError(`Failed to upload: ${failures.join('; ')}`);
+        return;
       }
       setFiles([]);
       onUploaded && onUploaded();
