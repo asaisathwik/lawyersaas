@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { X, Upload } from 'lucide-react';
 import { db, storage } from '../lib/firebase';
 import { doc, updateDoc, arrayUnion } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 export function UploadDocsModal({ isOpen, onClose, caseId, onUploaded }) {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [progress, setProgress] = useState(0); // 0-100 total progress
 
   if (!isOpen) return null;
 
@@ -25,19 +26,48 @@ export function UploadDocsModal({ isOpen, onClose, caseId, onUploaded }) {
     }
     try {
       setLoading(true);
-      const tasks = files.map(async (f) => {
-        const path = `cases/${caseId}/${Date.now()}_${f.name}`;
-        const r = ref(storage, path);
-        const metadata = { contentType: f.type || 'application/octet-stream' };
-        await uploadBytes(r, f, metadata);
-        const url = await getDownloadURL(r);
-        return {
-          name: f.name,
-          size: f.size,
-          type: f.type || 'application/octet-stream',
-          url,
-          uploaded_at: new Date().toISOString(),
-        };
+      setProgress(0);
+
+      const totalBytes = files.reduce((acc, f) => acc + (f.size || 0), 0) || 1;
+      const perFileTransferred = new Map(); // key: path string, value: bytesTransferred
+
+      const tasks = files.map((f) => {
+        return new Promise(async (resolve, reject) => {
+          try {
+            const path = `cases/${caseId}/${Date.now()}_${f.name}`;
+            const r = ref(storage, path);
+            const metadata = { contentType: f.type || 'application/octet-stream' };
+            const task = uploadBytesResumable(r, f, metadata);
+
+            task.on('state_changed',
+              (snap) => {
+                // Track bytesTransferred per file and compute overall
+                perFileTransferred.set(path, snap.bytesTransferred || 0);
+                let sum = 0;
+                perFileTransferred.forEach((v) => { sum += v; });
+                const pct = Math.max(0, Math.min(100, Math.round((sum / totalBytes) * 100)));
+                setProgress(pct);
+              },
+              (err) => reject(err),
+              async () => {
+                try {
+                  const url = await getDownloadURL(task.snapshot.ref);
+                  resolve({
+                    name: f.name,
+                    size: f.size,
+                    type: f.type || 'application/octet-stream',
+                    url,
+                    uploaded_at: new Date().toISOString(),
+                  });
+                } catch (e) {
+                  reject(e);
+                }
+              }
+            );
+          } catch (e) {
+            reject(e);
+          }
+        });
       });
       const results = await Promise.allSettled(tasks);
       const uploaded = results.filter(x => x.status === 'fulfilled').map(x => x.value);
@@ -59,6 +89,7 @@ export function UploadDocsModal({ isOpen, onClose, caseId, onUploaded }) {
       setError(err?.message || 'Upload failed');
     } finally {
       setLoading(false);
+      setProgress(0);
     }
   };
 
@@ -109,7 +140,7 @@ export function UploadDocsModal({ isOpen, onClose, caseId, onUploaded }) {
               className="px-4 py-2 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2"
             >
               <Upload className="w-4 h-4" />
-              {loading ? 'Uploading...' : 'Upload'}
+              {loading ? `Uploading... ${progress}%` : 'Upload'}
             </button>
           </div>
         </form>

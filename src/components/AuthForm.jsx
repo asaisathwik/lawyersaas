@@ -47,14 +47,14 @@ export function AuthForm() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 sm:p-8">
         <div className="flex items-center justify-center mb-8">
           <div className="bg-slate-900 p-3 rounded-xl">
             <LogIn className="w-8 h-8 text-white" />
           </div>
         </div>
 
-        <h1 className="text-3xl font-bold text-center text-slate-900 mb-2">
+        <h1 className="text-2xl md:text-3xl font-bold text-center text-slate-900 mb-2">
           Case Manager
         </h1>
         <p className="text-center text-slate-600 mb-8">

@@ -46,6 +46,7 @@ export function AddCaseModal({ isOpen, onClose, onCaseAdded }) {
         ...formData,
         next_hearing_date: formData.first_hearing_date || null,
         next_stage: formData.next_stage || '',
+        documents: [],
         case_status: 'open',
         notification_scheduled: false,
         next_notification_date: null,

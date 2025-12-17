@@ -4,8 +4,7 @@ import { CaseCard } from '../components/CaseCard';
 import { AddCaseModal } from '../components/AddCaseModal';
 import { EditCaseModal } from '../components/EditCaseModal';
 import { ConfirmDialog } from '../components/ConfirmDialog';
-import { Plus, Loader2, MoreHorizontal, Pencil, Eye, Trash2, Search, Paperclip } from 'lucide-react';
-import UploadDocsModal from '../components/UploadDocsModal';
+import { Plus, Loader2, MoreHorizontal, Pencil, Eye, Trash2, Search } from 'lucide-react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../lib/firebase';
@@ -283,7 +282,7 @@ export function Dashboard() {
 
         </div>
         {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
             <p className="text-sm text-slate-600 mb-1">Total Cases</p>
             <p className="text-3xl font-bold text-slate-900">{cases.length}</p>
@@ -340,7 +339,6 @@ export function Dashboard() {
                     <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase hidden md:table-cell">Court</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Next Hearing</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase hidden md:table-cell">Next Stage</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase hidden md:table-cell">Docs</th>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Status</th>
                     <th className="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase">Actions</th>
                   </tr>
@@ -379,7 +377,6 @@ export function Dashboard() {
                         <td className="px-6 py-3 text-sm text-slate-700 hidden md:table-cell">
                           <Highlight>{c.next_stage || '-'}</Highlight>
                         </td>
-                        <td className="px-6 py-3 text-sm text-slate-700 hidden md:table-cell">{Array.isArray(c.documents) ? c.documents.length : 0}</td>
                         <td className="px-6 py-3 text-sm">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${isClosed ? 'bg-slate-100 text-slate-700' : 'bg-green-100 text-green-700'}`}>
                             {isClosed ? 'Closed' : 'Active'}
@@ -400,15 +397,6 @@ export function Dashboard() {
                               className="absolute right-0 z-50 mt-2 w-40 bg-white border border-slate-200 rounded-lg shadow-lg"
                               onClick={(e) => e.stopPropagation()}
                             >
-                              <button
-                                className="w-full flex items-center gap-2 px-3 py-2 text-left text-slate-700 hover:bg-slate-50"
-                                onClick={() => {
-                                  setOpenMenuId(null);
-                                  setUploadCaseId(c.id);
-                                }}
-                              >
-                                <Paperclip className="w-4 h-4" /> Add Docs
-                              </button>
                               <button
                                 className="w-full flex items-center gap-2 px-3 py-2 text-left text-slate-700 hover:bg-slate-50"
                                 onClick={() => {
@@ -473,12 +461,7 @@ export function Dashboard() {
         loading={confirmLoading}
       />
 
-      <UploadDocsModal
-        isOpen={!!uploadCaseId}
-        onClose={() => setUploadCaseId(null)}
-        caseId={uploadCaseId}
-        onUploaded={fetchCases}
-      />
+      
     </div>
   );
 }
