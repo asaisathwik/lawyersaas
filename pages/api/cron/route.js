@@ -1,5 +1,10 @@
-import { NextResponse } from "next/server";
+export async function GET(req) {
+  const secret = req.nextUrl.searchParams.get("secret");
 
-export async function GET() {
-  return NextResponse.json({ ok: true, message: "Cron executed!" });
+  if (secret !== process.env.CRON_SECRET) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  // Your cron logic here
+  return Response.json({ ok: true });
 }
