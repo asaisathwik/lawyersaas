@@ -13,6 +13,33 @@ export function AddHearingModal({ isOpen, onClose, caseId, onHearingAdded }) {
     notify_time: '',
   });
 
+  function computeReminderTs(hearingDateStr, notifyTimeStr) {
+    if (!hearingDateStr) return null;
+    try {
+      const [y, m, d] = hearingDateStr.split('-').map((v) => parseInt(v, 10));
+      if (!y || !m || !d) return null;
+      // Use local time to align with user's expectation
+      const dt = new Date(y, m - 1, d, 0, 0, 0, 0);
+      // Day before
+      dt.setDate(dt.getDate() - 1);
+      if (notifyTimeStr) {
+        const [hh, mm] = notifyTimeStr.split(':').map((v) => parseInt(v, 10));
+        if (!Number.isNaN(hh) && !Number.isNaN(mm)) {
+          dt.setHours(hh, mm, 0, 0);
+        } else {
+          // Fallback: 6 PM
+          dt.setHours(18, 0, 0, 0);
+        }
+      } else {
+        // Default 6 PM local time
+        dt.setHours(18, 0, 0, 0);
+      }
+      return dt.getTime();
+    } catch {
+      return null;
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -25,10 +52,14 @@ export function AddHearingModal({ isOpen, onClose, caseId, onHearingAdded }) {
         return;
       }
 
+      const reminderTs = computeReminderTs(formData.hearing_date, formData.notify_time);
+
       await addDoc(collection(db, 'hearings'), {
         case_id: caseId,
         ...formData,
         notification_time: formData.notify_time || '',
+        reminder_scheduled_ts: reminderTs || null,
+        reminder_sent: false,
         created_at: new Date().toISOString(),
       });
 

@@ -13,6 +13,29 @@ export function EditHearingModal({ isOpen, onClose, hearingId, onHearingUpdated 
     notify_time: '',
   });
 
+  function computeReminderTs(hearingDateStr, notifyTimeStr) {
+    if (!hearingDateStr) return null;
+    try {
+      const [y, m, d] = hearingDateStr.split('-').map((v) => parseInt(v, 10));
+      if (!y || !m || !d) return null;
+      const dt = new Date(y, m - 1, d, 0, 0, 0, 0);
+      dt.setDate(dt.getDate() - 1);
+      if (notifyTimeStr) {
+        const [hh, mm] = notifyTimeStr.split(':').map((v) => parseInt(v, 10));
+        if (!Number.isNaN(hh) && !Number.isNaN(mm)) {
+          dt.setHours(hh, mm, 0, 0);
+        } else {
+          dt.setHours(18, 0, 0, 0);
+        }
+      } else {
+        dt.setHours(18, 0, 0, 0);
+      }
+      return dt.getTime();
+    } catch {
+      return null;
+    }
+  }
+
   useEffect(() => {
     const load = async () => {
       if (!isOpen || !hearingId) return;
@@ -40,11 +63,14 @@ export function EditHearingModal({ isOpen, onClose, hearingId, onHearingUpdated 
     setError('');
     setLoading(true);
     try {
+      const reminderTs = computeReminderTs(formData.hearing_date, formData.notify_time);
       await updateDoc(doc(db, 'hearings', hearingId), {
         hearing_date: formData.hearing_date || '',
         notes: formData.notes || '',
         next_stage: formData.next_stage || '',
         notification_time: formData.notify_time || '',
+        reminder_scheduled_ts: reminderTs || null,
+        reminder_sent: false,
       });
       onHearingUpdated && onHearingUpdated();
       onClose && onClose();
