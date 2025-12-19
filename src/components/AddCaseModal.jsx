@@ -92,10 +92,10 @@ export function AddCaseModal({ isOpen, onClose, onCaseAdded }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-slate-900">Add New Case</h2>
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-[1px] flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200">
+        <div className="sticky top-0 px-6 py-4 flex justify-between items-center rounded-t-2xl bg-white border-b border-slate-200 text-slate-900">
+          <h2 className="text-lg sm:text-xl font-semibold">Add New Case</h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-slate-100 rounded-lg transition"
@@ -104,28 +104,278 @@ export function AddCaseModal({ isOpen, onClose, onCaseAdded }) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="p-6 space-y-8">
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
               {error}
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Client Name *
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.client_name}
-                onChange={(e) => setFormData({ ...formData, client_name: e.target.value })}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-                placeholder="John Doe"
-              />
+          {/* Section: Client Info */}
+          <div>
+            <div className="mb-3">
+              <h3 className="text-sm font-semibold text-slate-900">Client Information</h3>
+              <p className="text-xs text-slate-500">Basic details about your client</p>
             </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Client Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.client_name}
+                  onChange={(e) => setFormData({ ...formData, client_name: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                  placeholder="John Doe"
+                />
+              </div>
 
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Client Phone Number *
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={formData.client_phone}
+                  onChange={(e) => setFormData({ ...formData, client_phone: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                  placeholder="+91 98765 43210"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Section: Case Basics */}
+          <div>
+            <div className="mb-3">
+              <h3 className="text-sm font-semibold text-slate-900">Case Basics</h3>
+              <p className="text-xs text-slate-500">Identifiers and type</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Case Number *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.case_number}
+                  onChange={(e) => setFormData({ ...formData, case_number: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                  placeholder="CS/123/2024"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  CNR Number
+                </label>
+                <input
+                  type="text"
+                  value={formData.cnr_number}
+                  onChange={(e) => setFormData({ ...formData, cnr_number: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                  placeholder="e.g., MHXX01-000000-20XX"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Case Type *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.case_type}
+                  onChange={(e) => setFormData({ ...formData, case_type: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                  placeholder="Civil, Criminal, Family, etc."
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Court Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.court_name}
+                  onChange={(e) => setFormData({ ...formData, court_name: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                  placeholder="District Court"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Section: Parties */}
+          <div>
+            <div className="mb-3">
+              <h3 className="text-sm font-semibold text-slate-900">Parties</h3>
+              <p className="text-xs text-slate-500">People involved in the case</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  First Party
+                </label>
+                <input
+                  type="text"
+                  value={formData.first_party}
+                  onChange={(e) => setFormData({ ...formData, first_party: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                  placeholder="Plaintiff / Petitioner"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Second Party
+                </label>
+                <input
+                  type="text"
+                  value={formData.second_party}
+                  onChange={(e) => setFormData({ ...formData, second_party: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                  placeholder="Defendant / Respondent"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Section: Advocates & Roles */}
+          <div>
+            <div className="mb-3">
+              <h3 className="text-sm font-semibold text-slate-900">Advocates & Roles</h3>
+              <p className="text-xs text-slate-500">Representation details</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Referring Advocate
+                </label>
+                <input
+                  type="text"
+                  value={formData.referring_advocate}
+                  onChange={(e) => setFormData({ ...formData, referring_advocate: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                  placeholder="Referring Advocate"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Incharge Advocate
+                </label>
+                <input
+                  type="text"
+                  value={formData.incharge_advocate}
+                  onChange={(e) => setFormData({ ...formData, incharge_advocate: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                  placeholder="Incharge Advocate"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Other Side Advocate
+                </label>
+                <input
+                  type="text"
+                  value={formData.other_side_advocate}
+                  onChange={(e) => setFormData({ ...formData, other_side_advocate: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                  placeholder="Opposing Counsel"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Appearing For
+                </label>
+                <input
+                  type="text"
+                  value={formData.appearing_for}
+                  onChange={(e) => setFormData({ ...formData, appearing_for: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                  placeholder="Client / First Party / Second Party"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Section: Numbers & Dates */}
+          <div>
+            <div className="mb-3">
+              <h3 className="text-sm font-semibold text-slate-900">Numbers & Dates</h3>
+              <p className="text-xs text-slate-500">Administrative information</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Stamp No
+                </label>
+                <input
+                  type="text"
+                  value={formData.stamp_no}
+                  onChange={(e) => setFormData({ ...formData, stamp_no: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                  placeholder="Stamp number"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  File No
+                </label>
+                <input
+                  type="text"
+                  value={formData.file_no}
+                  onChange={(e) => setFormData({ ...formData, file_no: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                  placeholder="Internal file number"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Counsel Advocate
+                </label>
+                <input
+                  type="text"
+                  value={formData.counsel_advocate}
+                  onChange={(e) => setFormData({ ...formData, counsel_advocate: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                  placeholder="Counsel Advocate"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  First Hearing Date *
+                </label>
+                <input
+                  type="date"
+                  required
+                  value={formData.first_hearing_date}
+                  onChange={(e) => setFormData({ ...formData, first_hearing_date: e.target.value })}
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Section: Next Stage & Notes */}
+          <div>
+            <div className="mb-3">
+              <h3 className="text-sm font-semibold text-slate-900">Next Stage & Notes</h3>
+              <p className="text-xs text-slate-500">What&apos;s next and any additional details</p>
+            </div>
+            <div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 Next Stage
@@ -141,215 +391,17 @@ export function AddCaseModal({ isOpen, onClose, onCaseAdded }) {
 
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                CNR Number
+                Notes
               </label>
-              <input
-                type="text"
-                value={formData.cnr_number}
-                onChange={(e) => setFormData({ ...formData, cnr_number: e.target.value })}
+              <textarea
+                value={formData.notes}
+                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-                placeholder="e.g., MHXX01-000000-20XX"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                First Party
-              </label>
-              <input
-                type="text"
-                value={formData.first_party}
-                onChange={(e) => setFormData({ ...formData, first_party: e.target.value })}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-                placeholder="Plaintiff / Petitioner"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Second Party
-              </label>
-              <input
-                type="text"
-                value={formData.second_party}
-                onChange={(e) => setFormData({ ...formData, second_party: e.target.value })}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-                placeholder="Defendant / Respondent"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Client Phone Number *
-              </label>
-              <input
-                type="tel"
-                required
-                value={formData.client_phone}
-                onChange={(e) => setFormData({ ...formData, client_phone: e.target.value })}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-                placeholder="+91 98765 43210"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Case Number *
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.case_number}
-                onChange={(e) => setFormData({ ...formData, case_number: e.target.value })}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-                placeholder="CS/123/2024"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Case Type *
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.case_type}
-                onChange={(e) => setFormData({ ...formData, case_type: e.target.value })}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-                placeholder="Civil, Criminal, Family, etc."
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Court Name *
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.court_name}
-                onChange={(e) => setFormData({ ...formData, court_name: e.target.value })}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-                placeholder="District Court"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Referring Advocate
-              </label>
-              <input
-                type="text"
-                value={formData.referring_advocate}
-                onChange={(e) => setFormData({ ...formData, referring_advocate: e.target.value })}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-                placeholder="Referring Advocate"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Incharge Advocate
-              </label>
-              <input
-                type="text"
-                value={formData.incharge_advocate}
-                onChange={(e) => setFormData({ ...formData, incharge_advocate: e.target.value })}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-                placeholder="Incharge Advocate"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Other Side Advocate
-              </label>
-              <input
-                type="text"
-                value={formData.other_side_advocate}
-                onChange={(e) => setFormData({ ...formData, other_side_advocate: e.target.value })}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-                placeholder="Opposing Counsel"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Appearing For
-              </label>
-              <input
-                type="text"
-                value={formData.appearing_for}
-                onChange={(e) => setFormData({ ...formData, appearing_for: e.target.value })}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-                placeholder="Client / First Party / Second Party"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Stamp No
-              </label>
-              <input
-                type="text"
-                value={formData.stamp_no}
-                onChange={(e) => setFormData({ ...formData, stamp_no: e.target.value })}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-                placeholder="Stamp number"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Counsel Advocate
-              </label>
-              <input
-                type="text"
-                value={formData.counsel_advocate}
-                onChange={(e) => setFormData({ ...formData, counsel_advocate: e.target.value })}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-                placeholder="Counsel Advocate"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                File No
-              </label>
-              <input
-                type="text"
-                value={formData.file_no}
-                onChange={(e) => setFormData({ ...formData, file_no: e.target.value })}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-                placeholder="Internal file number"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                First Hearing Date *
-              </label>
-              <input
-                type="date"
-                required
-                value={formData.first_hearing_date}
-                onChange={(e) => setFormData({ ...formData, first_hearing_date: e.target.value })}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                rows={4}
+                placeholder="Additional case details..."
               />
             </div>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
-              Notes
-            </label>
-            <textarea
-              value={formData.notes}
-              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-              rows={4}
-              placeholder="Additional case details..."
-            />
           </div>
 
           <div className="flex space-x-3 pt-4">

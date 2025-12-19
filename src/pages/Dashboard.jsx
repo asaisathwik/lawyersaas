@@ -282,18 +282,18 @@ export function Dashboard() {
 
         </div>
         {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-            <p className="text-sm text-slate-600 mb-1">Total Cases</p>
-            <p className="text-3xl font-bold text-slate-900">{cases.length}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+            <p className="text-xs font-medium text-slate-500 tracking-wider uppercase mb-1">Total Cases</p>
+            <p className="text-3xl font-extrabold text-slate-900">{cases.length}</p>
           </div>
-          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-            <p className="text-sm text-slate-600 mb-1">Active</p>
-            <p className="text-3xl font-bold text-slate-900">{cases.filter((c) => c.case_status !== 'closed').length}</p>
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+            <p className="text-xs font-medium text-slate-500 tracking-wider uppercase mb-1">Active</p>
+            <p className="text-3xl font-extrabold text-slate-900">{cases.filter((c) => c.case_status !== 'closed').length}</p>
           </div>
-          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-            <p className="text-sm text-slate-600 mb-1">Closed</p>
-            <p className="text-3xl font-bold text-slate-900">{cases.filter((c) => c.case_status === 'closed').length}</p>
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+            <p className="text-xs font-medium text-slate-500 tracking-wider uppercase mb-1">Closed</p>
+            <p className="text-3xl font-extrabold text-slate-900">{cases.filter((c) => c.case_status === 'closed').length}</p>
           </div>
         </div>
 
@@ -317,7 +317,7 @@ export function Dashboard() {
             </button>
           </div>
         ) : (
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-visible">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto" onClick={() => setOpenMenuId(null)}>
               {search && getFilteredCases().length === 0 && (
                 <div className="p-6 text-center text-slate-600">
@@ -332,15 +332,15 @@ export function Dashboard() {
               <table className="min-w-full divide-y divide-slate-200">
                 <thead className="bg-slate-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Case No</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">CNR</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Client</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase hidden md:table-cell">Type</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase hidden md:table-cell">Court</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Next Hearing</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase hidden md:table-cell">Next Stage</th>
-                    <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase">Status</th>
-                    <th className="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase">Actions</th>
+                    <th className="px-6 py-3 text-left text-[11px] font-semibold text-slate-600 uppercase tracking-wider sticky top-0 bg-slate-50">Case No</th>
+                    <th className="px-6 py-3 text-left text-[11px] font-semibold text-slate-600 uppercase tracking-wider sticky top-0 bg-slate-50">CNR</th>
+                    <th className="px-6 py-3 text-left text-[11px] font-semibold text-slate-600 uppercase tracking-wider sticky top-0 bg-slate-50">Client</th>
+                    <th className="px-6 py-3 text-left text-[11px] font-semibold text-slate-600 uppercase tracking-wider hidden md:table-cell sticky top-0 bg-slate-50">Type</th>
+                    <th className="px-6 py-3 text-left text-[11px] font-semibold text-slate-600 uppercase tracking-wider hidden md:table-cell sticky top-0 bg-slate-50">Court</th>
+                    <th className="px-6 py-3 text-left text-[11px] font-semibold text-slate-600 uppercase tracking-wider sticky top-0 bg-slate-50">Next Hearing</th>
+                    <th className="px-6 py-3 text-left text-[11px] font-semibold text-slate-600 uppercase tracking-wider hidden md:table-cell sticky top-0 bg-slate-50">Next Stage</th>
+                    <th className="px-6 py-3 text-left text-[11px] font-semibold text-slate-600 uppercase tracking-wider sticky top-0 bg-slate-50">Status</th>
+                    <th className="px-6 py-3 text-right text-[11px] font-semibold text-slate-600 uppercase tracking-wider sticky top-0 bg-slate-50">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
@@ -352,7 +352,7 @@ export function Dashboard() {
                     return (
                       <tr
                         key={c.id}
-                        className="hover:bg-slate-50 cursor-pointer"
+                        className="hover:bg-slate-50 odd:bg-slate-50/40 cursor-pointer"
                         onClick={() => router.push(`/case/${c.id}`)}
                       >
                         <td className="px-6 py-3 text-sm text-slate-900">{c.case_number || '-'}</td>

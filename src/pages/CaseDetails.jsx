@@ -16,8 +16,9 @@ import {
   CheckCircle,
   X
 } from 'lucide-react';
-import { db } from '../lib/firebase';
-import { doc, getDoc, updateDoc, deleteDoc, collection, getDocs, query, where, orderBy, limit } from 'firebase/firestore';
+import { auth, db } from '../lib/firebase';
+import { doc, getDoc, updateDoc, deleteDoc, collection, getDocs, query, where, orderBy, limit, arrayUnion, arrayRemove } from 'firebase/firestore';
+// no firebase storage here; upload handled via API using Cloudinary
  
 
 export function CaseDetails() {
@@ -32,6 +33,12 @@ export function CaseDetails() {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [hearingToEdit, setHearingToEdit] = useState(null);
   const [hearingToDelete, setHearingToDelete] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+  const [previewDoc, setPreviewDoc] = useState(null);
+  const [deleteDocCandidate, setDeleteDocCandidate] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   
 
   const fetchCaseDetails = async () => {
@@ -112,6 +119,170 @@ export function CaseDetails() {
       });
     } catch (e) {
       console.error('Error syncing next hearing date:', e);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    setUploadError('');
+    setSelectedFile(e?.target?.files?.[0] || null);
+  };
+
+  const handleUploadDocument = async (e) => {
+    e.preventDefault();
+    setUploadError('');
+    if (!id) {
+      setUploadError('Case not found.');
+      return;
+    }
+    if (!selectedFile) {
+      setUploadError('Please select a file.');
+      return;
+    }
+    setUploading(true);
+    try {
+      const token = await auth?.currentUser?.getIdToken?.();
+      if (!token) {
+        setUploadError('You are not signed in.');
+        setUploading(false);
+        return;
+      }
+      // Convert file to base64 via FileReader to avoid large arg spreads causing stack overflow
+      const base64 = await new Promise((resolve, reject) => {
+        try {
+          const reader = new FileReader();
+          reader.onload = () => {
+            try {
+              const result = reader.result || '';
+              // reader.result is a data URL: "data:<mime>;base64,<payload>"
+              if (typeof result === 'string') {
+                const idx = result.indexOf(',');
+                resolve(idx >= 0 ? result.slice(idx + 1) : '');
+              } else {
+                resolve('');
+              }
+            } catch (e) {
+              reject(e);
+            }
+          };
+          reader.onerror = () => reject(reader.error || new Error('Failed to read file'));
+          reader.readAsDataURL(selectedFile);
+        } catch (e) {
+          reject(e);
+        }
+      });
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          caseId: id,
+          name: selectedFile.name,
+          type: selectedFile.type || 'application/octet-stream',
+          size: selectedFile.size || null,
+          data: base64,
+        }),
+      });
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({}));
+        const message = payload?.error || `Upload failed (${res.status})`;
+        setUploadError(message);
+        setUploading(false);
+        return;
+      }
+      setSelectedFile(null);
+      setUploading(false);
+      fetchCaseDetails().catch((e2) => console.error('Refresh documents failed:', e2));
+    } catch (err) {
+      setUploadError(err?.message || 'Failed to upload. Please try again.');
+      console.error('Upload error:', err);
+      setUploading(false);
+    }
+  };
+
+  const buildDownloadUrl = (docItem) => {
+    const url = docItem?.url || '';
+    const name = docItem?.name || 'document';
+    const type = docItem?.content_type || 'application/octet-stream';
+    const q = new URLSearchParams({
+      url,
+      name,
+      type,
+    });
+    return `/api/download?${q.toString()}`;
+  };
+
+  const triggerDownload = async (docItem) => {
+    try {
+      const href = buildDownloadUrl(docItem);
+      const res = await fetch(href);
+      if (!res.ok) throw new Error('Download failed');
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = objectUrl;
+      a.download = docItem?.name || 'document';
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(objectUrl);
+    } catch (e) {
+      // Fallback: open in new tab if blob save fails
+      try {
+        window.open(docItem?.url || '#', '_blank', 'noopener,noreferrer');
+      } catch {}
+    }
+  };
+
+  const openPreview = (docItem) => {
+    const type = (docItem?.content_type || '').toLowerCase();
+    const isImage = type.startsWith('image');
+    if (isImage) {
+      setPreviewDoc(docItem);
+    } else {
+      triggerDownload(docItem);
+    }
+  };
+
+  const closePreview = () => {
+    setPreviewDoc(null);
+  };
+
+  const confirmDeleteDocument = (docItem) => {
+    setDeleteDocCandidate(docItem);
+  };
+
+  const handleDeleteDocument = async () => {
+    if (!deleteDocCandidate || !id) return;
+    setDeleteLoading(true);
+    try {
+      const token = await auth?.currentUser?.getIdToken?.();
+      if (!token) {
+        setUploadError('You are not signed in.');
+        setDeleteLoading(false);
+        return;
+      }
+      const res = await fetch('/api/delete-document', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ caseId: id, document: deleteDocCandidate }),
+      });
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({}));
+        throw new Error(payload?.error || `Delete failed (${res.status})`);
+      }
+      // Firestore already updated by API, but refetch to sync UI
+      await fetchCaseDetails();
+      setDeleteDocCandidate(null);
+    } catch (e) {
+      setUploadError(e?.message || 'Failed to delete document');
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -390,6 +561,127 @@ export function CaseDetails() {
           )}
         </div>
 
+        
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-slate-900">Documents</h2>
+          </div>
+          <form onSubmit={handleUploadDocument} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-6">
+            <input
+              type="file"
+              onChange={handleFileChange}
+              className="block w-full text-sm text-slate-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200"
+            />
+            <button
+              type="submit"
+              disabled={uploading}
+              className="inline-flex items-center justify-center px-4 py-2 bg-slate-900 text-white rounded-md font-medium hover:bg-slate-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {uploading ? (
+                <span className="inline-flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Uploading...
+                </span>
+              ) : (
+                'Upload'
+              )}
+            </button>
+          </form>
+          {uploadError && <p className="text-sm text-red-600 mb-4">{uploadError}</p>}
+
+          {(caseData?.documents && caseData.documents.length > 0) ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {caseData.documents.map((docItem, idx) => {
+                const type = (docItem.content_type || '').toLowerCase();
+                const isImage = type.startsWith('image');
+                const isPdf = type.includes('pdf') || /\.pdf$/i.test(docItem?.name || '');
+                return (
+                  <div key={`${docItem.url}-${idx}`} className="group relative border border-slate-200 rounded-lg overflow-hidden hover:shadow-md transition">
+                    <button
+                      type="button"
+                      onClick={() => openPreview(docItem)}
+                      className="block w-full text-left"
+                    >
+                      <div className="aspect-video bg-slate-50 flex items-center justify-center overflow-hidden">
+                        {isImage ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={docItem.url} alt={docItem.name || 'document'} className="w-full h-full object-cover" />
+                        ) : isPdf ? (
+                          <div className="flex flex-col items-center justify-center text-slate-600">
+                            <FileText className="w-10 h-10 mb-2" />
+                            <span className="text-sm">PDF</span>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center text-slate-600">
+                            <FileText className="w-10 h-10 mb-2" />
+                            <span className="text-sm">Document</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-3">
+                        <p className="text-slate-900 font-medium truncate">{docItem.name || 'Document'}</p>
+                        <p className="text-xs text-slate-500">
+                          {docItem.content_type || 'file'} {docItem.size ? `• ${(docItem.size / (1024 * 1024)).toFixed(2)} MB` : ''} {docItem.uploaded_at ? `• ${new Date(docItem.uploaded_at).toLocaleDateString('en-IN')}` : ''}
+                        </p>
+                        <div className="mt-2">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              triggerDownload(docItem);
+                            }}
+                            className="inline-flex items-center px-2.5 py-1.5 text-slate-700 border border-slate-300 rounded-md text-xs hover:bg-slate-50 transition"
+                          >
+                            Download
+                          </button>
+                        </div>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => confirmDeleteDocument(docItem)}
+                      className="absolute top-2 right-2 rounded-full bg-white/90 border border-slate-200 p-1.5 text-slate-700 hover:bg-white shadow-sm"
+                      aria-label="Delete document"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-slate-600">No documents uploaded yet.</p>
+          )}
+
+          {/* Preview modal */}
+          {previewDoc && (
+            <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={closePreview}>
+              <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                <div className="flex items-center justify-between border-b border-slate-200 p-3">
+                  <p className="font-medium text-slate-900 truncate pr-6">{previewDoc.name || 'Document'}</p>
+                  <button className="p-1.5 rounded-md hover:bg-slate-100" onClick={closePreview} aria-label="Close preview">
+                    <X className="w-5 h-5 text-slate-700" />
+                  </button>
+                </div>
+                <div className="p-0">
+                  {((previewDoc.content_type || '').toLowerCase().startsWith('image')) ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={previewDoc.url} alt={previewDoc.name || 'document'} className="max-h-[80vh] w-auto mx-auto" />
+                  ) : (
+                    <div className="p-6">
+                      <p className="text-slate-700 mb-3">Preview is available for images only.</p>
+                      <a href={previewDoc.url} target="_blank" rel="noreferrer" className="px-3 py-2 text-slate-700 border border-slate-300 rounded-md text-sm hover:bg-slate-50 transition">
+                        Open / Download
+                      </a>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-slate-900">Hearing History</h2>
@@ -471,6 +763,17 @@ export function CaseDetails() {
           await syncNextHearingDate();
           await fetchCaseDetails();
         }}
+      />
+
+      <ConfirmDialog
+        isOpen={!!deleteDocCandidate}
+        title="Delete document?"
+        description="This file will be removed."
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={handleDeleteDocument}
+        onCancel={() => setDeleteDocCandidate(null)}
+        loading={deleteLoading}
       />
 
       <ConfirmDialog

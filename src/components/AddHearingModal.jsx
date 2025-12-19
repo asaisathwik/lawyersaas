@@ -56,10 +56,10 @@ export function AddHearingModal({ isOpen, onClose, caseId, onHearingAdded }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center">
-          <h2 className="text-xl font-bold text-slate-900">Add Next Hearing</h2>
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-[1px] flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200">
+        <div className="sticky top-0 px-6 py-4 flex justify-between items-center rounded-t-2xl bg-white border-b border-slate-200 text-slate-900">
+          <h2 className="text-lg font-semibold">Add Next Hearing</h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-slate-100 rounded-lg transition"
@@ -75,32 +75,34 @@ export function AddHearingModal({ isOpen, onClose, caseId, onHearingAdded }) {
             </div>
           )}
 
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
-              Hearing Date *
-            </label>
-            <input
-              type="date"
-              required
-              value={formData.hearing_date}
-              onChange={(e) => setFormData({ ...formData, hearing_date: e.target.value })}
-              className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-            />
-          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Hearing Date *
+              </label>
+              <input
+                type="date"
+                required
+                value={formData.hearing_date}
+                onChange={(e) => setFormData({ ...formData, hearing_date: e.target.value })}
+                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
-              Notification Time (optional)
-            </label>
-            <input
-              type="time"
-              value={formData.notify_time}
-              onChange={(e) => setFormData({ ...formData, notify_time: e.target.value })}
-              className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-            />
-            <p className="mt-2 text-xs text-slate-500">
-              If you don&apos;t set a time, you&apos;ll get a reminder the day before at 6:00 PM.
-            </p>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">
+                Notification Time (optional)
+              </label>
+              <input
+                type="time"
+                value={formData.notify_time}
+                onChange={(e) => setFormData({ ...formData, notify_time: e.target.value })}
+                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+              />
+              <p className="mt-2 text-xs text-slate-500">
+                If you don&apos;t set a time, you&apos;ll get a reminder the day before at 6:00 PM.
+              </p>
+            </div>
           </div>
 
           <div>

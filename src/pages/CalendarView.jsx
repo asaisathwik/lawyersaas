@@ -85,9 +85,11 @@ export function CalendarView() {
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Hearing Calendar</h1>
-          <p className="text-slate-600">View and track all upcoming hearings</p>
+        <div className="mb-8 flex items-end justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900 mb-2">Hearing Calendar</h1>
+            <p className="text-slate-600">View and track all upcoming hearings</p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -115,7 +117,7 @@ export function CalendarView() {
                   background: #e2e8f0;
                 }
                 .has-hearing {
-                  background: #dbeafe !important;
+                  background: #e2e8f0 !important;
                   font-weight: 600;
                 }
                 .has-hearing::after {
@@ -126,7 +128,7 @@ export function CalendarView() {
                   transform: translateX(-50%);
                   width: 6px;
                   height: 6px;
-                  background: #1e40af;
+                  background: #0f172a;
                   border-radius: 50%;
                 }
                 .react-calendar__tile--active.has-hearing::after {
