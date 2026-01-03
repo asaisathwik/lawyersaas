@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { X } from 'lucide-react';
-import { db } from '../lib/firebase';
+import { X, FileText } from 'lucide-react';
+import { auth, db } from '../lib/firebase';
 import { addDoc, collection, updateDoc, doc } from 'firebase/firestore';
 
 export function AddHearingModal({ isOpen, onClose, caseId, onHearingAdded }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const [formData, setFormData] = useState({
     hearing_date: '',
     notes: '',
@@ -54,7 +55,7 @@ export function AddHearingModal({ isOpen, onClose, caseId, onHearingAdded }) {
 
       const reminderTs = computeReminderTs(formData.hearing_date, formData.notify_time);
 
-      await addDoc(collection(db, 'hearings'), {
+      const hearingRef = await addDoc(collection(db, 'hearings'), {
         case_id: caseId,
         ...formData,
         notification_time: formData.notify_time || '',
@@ -62,6 +63,66 @@ export function AddHearingModal({ isOpen, onClose, caseId, onHearingAdded }) {
         reminder_sent: false,
         created_at: new Date().toISOString(),
       });
+
+      // Upload any selected files to case and attach copies to this hearing
+      const hearingDocs = [];
+      if (selectedFiles && selectedFiles.length > 0) {
+        const token = await auth?.currentUser?.getIdToken?.();
+        for (const file of selectedFiles) {
+          // Convert file to base64 via FileReader
+          // eslint-disable-next-line no-await-in-loop
+          const base64 = await new Promise((resolve, reject) => {
+            try {
+              const reader = new FileReader();
+              reader.onload = () => {
+                try {
+                  const result = reader.result || '';
+                  if (typeof result === 'string') {
+                    const idx = result.indexOf(',');
+                    resolve(idx >= 0 ? result.slice(idx + 1) : '');
+                  } else {
+                    resolve('');
+                  }
+                } catch (e) {
+                  reject(e);
+                }
+              };
+              reader.onerror = () => reject(reader.error || new Error('Failed to read file'));
+              reader.readAsDataURL(file);
+            } catch (e) {
+              reject(e);
+            }
+          });
+          // eslint-disable-next-line no-await-in-loop
+          const res = await fetch('/api/upload', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: token ? `Bearer ${token}` : '',
+            },
+            body: JSON.stringify({
+              caseId,
+              name: file.name,
+              type: file.type || 'application/octet-stream',
+              size: file.size || null,
+              data: base64,
+            }),
+          });
+          if (res.ok) {
+            // eslint-disable-next-line no-await-in-loop
+            const payload = await res.json().catch(() => ({}));
+            if (payload?.document) {
+              hearingDocs.push(payload.document);
+            }
+          }
+        }
+        if (hearingDocs.length > 0) {
+          await updateDoc(doc(db, 'hearings', hearingRef.id), {
+            documents: hearingDocs,
+            updated_at: new Date().toISOString(),
+          });
+        }
+      }
 
       await updateDoc(doc(db, 'cases', caseId), {
         next_hearing_date: formData.hearing_date || null,
@@ -75,6 +136,7 @@ export function AddHearingModal({ isOpen, onClose, caseId, onHearingAdded }) {
         next_stage: '',
         notify_time: '',
       });
+      setSelectedFiles([]);
       onHearingAdded && onHearingAdded();
       onClose && onClose();
     } catch (err) {
@@ -160,6 +222,32 @@ export function AddHearingModal({ isOpen, onClose, caseId, onHearingAdded }) {
               className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
               placeholder="Trial / Evidence / Arguments / ..."
             />
+          </div>
+
+          {/* Optional Documents */}
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Attach Documents (optional)
+            </label>
+            <input
+              type="file"
+              multiple
+              onChange={(e) => {
+                const files = Array.from(e?.target?.files || []);
+                setSelectedFiles(files);
+              }}
+              className="block w-full text-sm text-slate-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200"
+            />
+            {selectedFiles && selectedFiles.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {selectedFiles.map((f, idx) => (
+                  <span key={`${f.name}-${idx}`} className="inline-flex items-center gap-1 px-2 py-1 rounded-md border border-slate-200 text-xs text-slate-700 bg-slate-50">
+                    <FileText className="w-3 h-3" />
+                    <span className="truncate max-w-[160px]">{f.name}</span>
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="flex space-x-3 pt-4">

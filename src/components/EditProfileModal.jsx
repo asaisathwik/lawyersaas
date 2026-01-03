@@ -37,12 +37,24 @@ export default function EditProfileModal({ isOpen, onClose, userId, onUpdated })
     setError('');
     setLoading(true);
     try {
+      // Normalize mobile to +91 + last 10 digits
+      const normalizedMobile = (() => {
+        try {
+          const raw = String(formData?.mobile ?? '');
+          const digitsOnly = raw.replace(/\D/g, '');
+          const lastTen = digitsOnly.slice(-10);
+          return lastTen ? `+91${lastTen}` : '';
+        } catch {
+          return '';
+        }
+      })();
+
       const ref = doc(db, 'users', userId);
       // Ensure doc exists and then update fields
       await setDoc(ref, {}, { merge: true });
       await updateDoc(ref, {
         name: formData.name || '',
-        mobile: formData.mobile || '',
+        mobile: normalizedMobile,
         // email edits are disabled here to avoid auth mismatch
         updated_at: new Date().toISOString(),
       });
@@ -98,8 +110,14 @@ export default function EditProfileModal({ isOpen, onClose, userId, onUpdated })
               </label>
               <input
                 type="tel"
+                inputMode="numeric"
+                maxLength={10}
+                pattern="^[0-9]{10}$"
                 value={formData.mobile}
-                onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
+                onChange={(e) => {
+                  const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+                  setFormData({ ...formData, mobile: digits });
+                }}
                 className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
                 placeholder="+91 98765 43210"
               />

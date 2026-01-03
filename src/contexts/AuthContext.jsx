@@ -65,10 +65,21 @@ export function AuthProvider({ children }) {
       try {
         if (db) {
           const userRef = doc(db, 'users', firebaseUser.uid);
+          // Normalize mobile to +91 + last 10 digits
+          const normalizedMobile = (() => {
+            try {
+              const raw = String(profile?.mobile ?? '');
+              const digitsOnly = raw.replace(/\D/g, '');
+              const lastTen = digitsOnly.slice(-10);
+              return lastTen ? `+91${lastTen}` : '';
+            } catch {
+              return '';
+            }
+          })();
           await setDoc(userRef, {
             email: firebaseUser.email || email,
             name: profile.name || '',
-            mobile: profile.mobile || '',
+            mobile: normalizedMobile,
             created_at: new Date().toISOString(),
           }, { merge: true });
         }

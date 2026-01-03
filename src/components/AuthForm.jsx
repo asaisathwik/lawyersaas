@@ -91,9 +91,14 @@ export function AuthForm() {
                 <input
                   type="tel"
                   required
-                  pattern="^[0-9]{10,}$"
+                  inputMode="numeric"
+                  maxLength={10}
+                  pattern="^[0-9]{10}$"
                   value={mobile}
-                  onChange={(e) => setMobile(e.target.value)}
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+                    setMobile(digits);
+                  }}
                   className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
                   placeholder="+91 98765 43210"
                 />

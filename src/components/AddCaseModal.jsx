@@ -8,6 +8,7 @@ export function AddCaseModal({ isOpen, onClose, onCaseAdded }) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showHearingOptions, setShowHearingOptions] = useState(false);
   const [formData, setFormData] = useState({
     client_name: '',
     client_phone: '',
@@ -353,42 +354,59 @@ export function AddCaseModal({ isOpen, onClose, onCaseAdded }) {
                   placeholder="Counsel Advocate"
                 />
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  First Hearing Date *
-                </label>
-                <input
-                  type="date"
-                  required
-                  value={formData.first_hearing_date}
-                  onChange={(e) => setFormData({ ...formData, first_hearing_date: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-                />
-              </div>
             </div>
           </div>
 
-          {/* Section: Next Stage & Notes */}
+          {/* Section: Optional Hearing Details */}
           <div>
-            <div className="mb-3">
-              <h3 className="text-sm font-semibold text-slate-900">Next Stage & Notes</h3>
-              <p className="text-xs text-slate-500">What&apos;s next and any additional details</p>
+            <div className="mb-3 flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-900">Hearing Details (optional)</h3>
+                <p className="text-xs text-slate-500">Add first hearing date and next stage if you want</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowHearingOptions((v) => !v)}
+                className="text-sm text-slate-700 hover:text-slate-900 px-3 py-1.5 border border-slate-300 rounded-lg transition"
+              >
+                {showHearingOptions ? 'Hide' : 'Add hearing details'}
+              </button>
             </div>
-            <div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Next Stage
-              </label>
-              <input
-                type="text"
-                value={formData.next_stage}
-                onChange={(e) => setFormData({ ...formData, next_stage: e.target.value })}
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
-                placeholder="Trial / Evidence / Arguments / ..."
-              />
-            </div>
+            {showHearingOptions && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    First Hearing Date
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.first_hearing_date}
+                    onChange={(e) => setFormData({ ...formData, first_hearing_date: e.target.value })}
+                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    First Hearing Stage
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.next_stage}
+                    onChange={(e) => setFormData({ ...formData, next_stage: e.target.value })}
+                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                    placeholder="Trial / Evidence / Arguments / ..."
+                  />
+                </div>
+              </div>
+            )}
+          </div>
 
+          {/* Section: Notes */}
+          <div>
+            {/* <div className="mb-3">
+              <h3 className="text-sm font-semibold text-slate-900">Notes</h3>
+              <p className="text-xs text-slate-500">Any additional details about the case</p>
+            </div> */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
                 Notes
@@ -400,7 +418,6 @@ export function AddCaseModal({ isOpen, onClose, onCaseAdded }) {
                 rows={4}
                 placeholder="Additional case details..."
               />
-            </div>
           </div>
           </div>
 

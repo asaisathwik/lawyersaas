@@ -28,6 +28,11 @@ export function CaseDetails() {
   const [hearings, setHearings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isQuickHearingOpen, setIsQuickHearingOpen] = useState(false);
+  const [quickDate, setQuickDate] = useState('');
+  const [quickStage, setQuickStage] = useState('');
+  const [quickSaving, setQuickSaving] = useState(false);
+  const [quickError, setQuickError] = useState('');
   const [isClosing, setIsClosing] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -512,15 +517,31 @@ export function CaseDetails() {
               <Calendar className="w-5 h-5 text-slate-400 mt-0.5" />
               <div>
                 <p className="text-sm text-slate-500 mb-1">Next Hearing</p>
-                <p className="text-slate-900 font-medium">
-                  {caseData.next_hearing_date
-                    ? new Date(caseData.next_hearing_date).toLocaleDateString('en-IN', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                      })
-                    : 'Not scheduled'}
-                </p>
+                {caseData.next_hearing_date ? (
+                  <p className="text-slate-900 font-medium">
+                    {new Date(caseData.next_hearing_date).toLocaleDateString('en-IN', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    })}
+                  </p>
+                ) : (
+                  <div className="flex flex-col">
+                    <p className="text-slate-900 font-medium">Not scheduled</p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setQuickDate('');
+                        setQuickStage('');
+                        setQuickError('');
+                        setIsQuickHearingOpen(true);
+                      }}
+                      className="self-start mt-2 px-2.5 py-1.5 text-slate-700 border border-slate-300 rounded-md text-xs hover:bg-slate-50 transition"
+                    >
+                      Add hearing details
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -736,6 +757,22 @@ export function CaseDetails() {
                   {hearing.notes && (
                     <p className="text-slate-700 whitespace-pre-wrap">{hearing.notes}</p>
                   )}
+                  {Array.isArray(hearing.documents) && hearing.documents.length > 0 && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {hearing.documents.map((docItem, idx) => (
+                        <a
+                          key={`${docItem.url || idx}`}
+                          href={docItem.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-md border border-slate-200 text-xs text-slate-700 bg-slate-50 hover:bg-slate-100 transition"
+                        >
+                          <FileText className="w-3 h-3" />
+                          <span className="truncate max-w-[160px]">{docItem.name || 'Document'}</span>
+                        </a>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -753,7 +790,92 @@ export function CaseDetails() {
         }}
       />
 
-      
+      {/* Quick add two inputs modal */}
+      {isQuickHearingOpen && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl border border-slate-200">
+            <div className="sticky top-0 px-6 py-4 flex justify-between items-center rounded-t-2xl bg-white border-b border-slate-200 text-slate-900">
+              <h3 className="text-lg font-semibold">Add Hearing Details</h3>
+              <button
+                onClick={() => setIsQuickHearingOpen(false)}
+                className="p-2 hover:bg-slate-100 rounded-lg transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                if (!id) return;
+                setQuickError('');
+                setQuickSaving(true);
+                try {
+                  await updateDoc(doc(db, 'cases', id), {
+                    first_hearing_date: quickDate || '',
+                    next_stage: quickStage || '',
+                    next_hearing_date: quickDate || null,
+                    updated_at: new Date().toISOString(),
+                  });
+                  setIsQuickHearingOpen(false);
+                  await fetchCaseDetails();
+                } catch (e2) {
+                  setQuickError(e2 instanceof Error ? e2.message : 'Failed to save hearing details.');
+                } finally {
+                  setQuickSaving(false);
+                }
+              }}
+              className="p-6 space-y-5"
+            >
+              {quickError && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                  {quickError}
+                </div>
+              )}
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    First Hearing Date
+                  </label>
+                  <input
+                    type="date"
+                    value={quickDate}
+                    onChange={(e) => setQuickDate(e.target.value)}
+                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    First Hearing Stage
+                  </label>
+                  <input
+                    type="text"
+                    value={quickStage}
+                    onChange={(e) => setQuickStage(e.target.value)}
+                    className="w-full px-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent outline-none transition"
+                    placeholder="Trial / Evidence / Arguments / ..."
+                  />
+                </div>
+              </div>
+              <div className="flex space-x-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsQuickHearingOpen(false)}
+                  className="flex-1 px-6 py-3 border border-slate-300 text-slate-700 rounded-lg font-medium hover:bg-slate-50 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={quickSaving}
+                  className="flex-1 px-6 py-3 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {quickSaving ? 'Saving...' : 'Save'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       <EditHearingModal
         isOpen={!!hearingToEdit}
